@@ -1,0 +1,232 @@
+{
+  "meridians": [
+    {
+      "id": 0,
+      "type": "LUNG",
+      "name": "Lung Meridian",
+      "chineseName": "手太阴肺经",
+      "color": "0xFF0000",
+      "ziwuliuzhu": {
+        "startHour": 23,
+        "startMinute": 0,
+        "endHour": 1,
+        "endMinute": 0,
+        "description": "子时（23:00-01:00）：手太阴肺经当令"
+      },
+      "acupoints": [
+        {
+          "id": 1,
+          "name": "Zhongfu",
+          "chineseName": "中府",
+          "pinyin": "zhong fu",
+          "location": "胸部，锁骨下，距前正中线6寸，在第1胸肌间隙内。",
+          "functions": "守卫肺气，定嗓止喉，导病下行。",
+          "indications": "哮嗽，咳嗽，气喜上逼，胸满，肺病嗽血。",
+          "importance": 4
+        },
+        {
+          "id": 2,
+          "name": "Yunmen",
+          "chineseName": "云门",
+          "pinyin": "yun men",
+          "location": "胸部，锁骨下，距前正中线6寸，在第2胸肌间隙内。",
+          "functions": "守卫肺气，定嗓止喉，导病下行。",
+          "indications": "哮嗽，咳嗽，气喜上逼，胸满，肺病嗽血。",
+          "importance": 3
+        },
+        {
+          "id": 3,
+          "name": "Tianfu",
+          "chineseName": "天府",
+          "pinyin": "tian fu",
+          "location": "上臂内侧，肩臂关节下3寸，肩二头肌与股二头肌之间。",
+          "functions": "清泛肺热，定嗓止哮，安神定志。",
+          "indications": "哮嗽，咳嗽，肺病，胸满，喉痛，失音，心惊悶。",
+          "importance": 4
+        },
+        {
+          "id": 5,
+          "name": "Chize",
+          "chineseName": "尺泽",
+          "pinyin": "chi ze",
+          "location": "肢窝横纹中，股二头肌腰肚的桥窝处。",
+          "functions": "泛肺清热，定嗓止哮，导病下行。",
+          "indications": "哮嗽，咳嗽，胸满，热病不汗，肛门痛痛。",
+          "importance": 5
+        },
+        {
+          "id": 7,
+          "name": "Lieque",
+          "chineseName": "列缺",
+          "pinyin": "lie que",
+          "location": "腕部桥窝上，桌骨茅突上方，桌骨茅突与桥窝之间，当桌骨桥窝上方1.5寸。",
+          "functions": "守卫肺气，定嗓止喉，导病下行。",
+          "indications": "头痛，颈项强直，哮嗽，咳嗽，发热恶寒，手腕痛痛。",
+          "importance": 5
+        },
+        {
+          "id": 9,
+          "name": "Taiyuan",
+          "chineseName": "太渊",
+          "pinyin": "tai yuan",
+          "location": "腕部，桌骨茅突与腔横纹之间，桥动脉所在处。",
+          "functions": "守卫肺气，定嗓止喉，导病下行。",
+          "indications": "哮嗽，咳嗽，胸满，气喜上逼，喉痛，失音。",
+          "importance": 5
+        },
+        {
+          "id": 10,
+          "name": "Yuji",
+          "chineseName": "鱼际",
+          "pinyin": "yu ji",
+          "location": "手掌部，第1掌骨中点的桥窝处。",
+          "functions": "清泛肺热，定嗓止哮，导病下行。",
+          "indications": "哮嗽，咳嗽，喉痛，失音，喉病。",
+          "importance": 4
+        },
+        {
+          "id": 11,
+          "name": "Shaoshang",
+          "chineseName": "少商",
+          "pinyin": "shao shang",
+          "location": "手拇指桥侧，距指甲角0.1寸。",
+          "functions": "清泛肺热，开窗空窝，苏醒开窗。",
+          "indications": "哮嗽，咳嗽，喉痛，失音，水肿，中暗。",
+          "importance": 3
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "type": "LARGE_INTESTINE",
+      "name": "Large Intestine Meridian",
+      "chineseName": "手阳明大肠经",
+      "color": "0xFFA500",
+      "ziwuliuzhu": {
+        "startHour": 1,
+        "startMinute": 0,
+        "endHour": 3,
+        "endMinute": 0,
+        "description": "丑时（01:00-03:00）：手阳明大肠经当令"
+      },
+      "acupoints": [
+        {
+          "id": 1,
+          "name": "Shangyang",
+          "chineseName": "商阳",
+          "pinyin": "shang yang",
+          "location": "食指桥侧，距指甲角0.1寸。",
+          "functions": "清泛肺热，开窗空窝，苏醒开窗。",
+          "indications": "发热恶寒，喉痛，鼻塞，鼻血，齿痛，中暗。",
+          "importance": 3
+        },
+        {
+          "id": 4,
+          "name": "Hegu",
+          "chineseName": "合谷",
+          "pinyin": "he gu",
+          "location": "第1掌骨与第2掌骨间，约当第1掌骨中点处。",
+          "functions": "疏风清热，止痛开窗，调和气血。",
+          "indications": "头痛，牙痛，眼痛，鼻出血，喉痛，面肿，发热恶寒。",
+          "importance": 5
+        },
+        {
+          "id": 10,
+          "name": "Shousanli",
+          "chineseName": "手三里",
+          "pinyin": "shou san li",
+          "location": "前臂背侧，腕尺关节下2寸，桌骨桌骨茅突与股骨外上蹄之间。",
+          "functions": "疏风清热，活素利节，止痛开窗。",
+          "indications": "手臂痛痛，腕痛，肩周痛，齿痛，面痛。",
+          "importance": 4
+        },
+        {
+          "id": 11,
+          "name": "Quchi",
+          "chineseName": "曲池",
+          "pinyin": "qu chi",
+          "location": "肢窝横纹外侧端，股骨外上蹄与桌骨之间。",
+          "functions": "清热解表，消肿止痛，疗病开窗。",
+          "indications": "发热恶寒，病痛，面肿，齿痛，肩臂痛痛，手臂痛痛。",
+          "importance": 5
+        },
+        {
+          "id": 15,
+          "name": "Jianyu",
+          "chineseName": "肩骨",
+          "pinyin": "jian yu",
+          "location": "肩关节部，肩峰与肩峦之间凹陷处，当三角肌前缘与肩峦之间。",
+          "functions": "疏风清热，活素利节，止痛开窗。",
+          "indications": "肩周痛，半身不遂，上肢痣痛，手臂不能举。",
+          "importance": 4
+        },
+        {
+          "id": 20,
+          "name": "Yingxiang",
+          "chineseName": "迎香",
+          "pinyin": "ying xiang",
+          "location": "鼻唇沟外，当鼻翼外缘中点处。",
+          "functions": "疏风清热，开窗利鼻，止痛开窗。",
+          "indications": "鼻塞，鼻出血，鼻痛，面肿，面痛。",
+          "importance": 4
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "STOMACH",
+      "name": "Stomach Meridian",
+      "chineseName": "足阳明胃经",
+      "color": "0xFFFF00",
+      "ziwuliuzhu": {
+        "startHour": 3,
+        "startMinute": 0,
+        "endHour": 5,
+        "endMinute": 0,
+        "description": "寅时（03:00-05:00）：足阳明胃经当令"
+      },
+      "acupoints": [
+        {
+          "id": 25,
+          "name": "Tianshu",
+          "chineseName": "天枢",
+          "pinyin": "tian shu",
+          "location": "腹部，腹中线旁开约2寸，当脂下缘。",
+          "functions": "理气健脑，调理肠胃，消食导滑。",
+          "indications": "腹痛，腹泡，便秘，泰泰，痛经，病痛。",
+          "importance": 4
+        },
+        {
+          "id": 36,
+          "name": "Zusanli",
+          "chineseName": "足三里",
+          "pinyin": "zu san li",
+          "location": "小腿外侧，膝关节下3寸，距胋骨外缘一横指。",
+          "functions": "和胃健脑，补中益气，强身健体。",
+          "indications": "胃痛，胃肠不和，泰泰，便秘，消化不良，全身乏力。",
+          "importance": 5
+        },
+        {
+          "id": 40,
+          "name": "Fenglong",
+          "chineseName": "丰隆",
+          "pinyin": "feng long",
+          "location": "小腿外侧，距胋骨前缘一横指，当胋骨下8寸。",
+          "functions": "化疸消病，健脑和胃，化疸化湿。",
+          "indications": "哮嗽，咳嗽，胸满，病痛，消化不良。",
+          "importance": 4
+        },
+        {
+          "id": 44,
+          "name": "Neiting",
+          "chineseName": "内庭",
+          "pinyin": "nei ting",
+          "location": "足背，第2、第3足趾间，趾蹄连合部前方凹陷处。",
+          "functions": "清胃泛热，开窗利咽，消食导滑。",
+          "indications": "发热恶寒，喉痛，齿痛，面肿，消化不良。",
+          "importance": 4
+        }
+      ]
+    }
+  ]
+}

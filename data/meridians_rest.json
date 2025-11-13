@@ -1,0 +1,350 @@
+{
+  "meridians": [
+    {
+      "id": 6,
+      "type": "BLADDER",
+      "name": "Bladder Meridian",
+      "chineseName": "足太阳膀胱经",
+      "color": "0x0000FF",
+      "ziwuliuzhu": {
+        "startHour": 11,
+        "startMinute": 0,
+        "endHour": 13,
+        "endMinute": 0,
+        "description": "未时（11:00-13:00）：足太阳膀胱经当令"
+      },
+      "acupoints": [
+        {
+          "id": 11,
+          "name": "Dazhu",
+          "chineseName": "大朱",
+          "pinyin": "da zhu",
+          "location": "背部，第1胸椎棱突下，旁开春有1.5寸。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "头痛，颈项强直，发热恶寒，肩周痛，肩胸痛。",
+          "importance": 4
+        },
+        {
+          "id": 23,
+          "name": "Shenshu",
+          "chineseName": "肾俯",
+          "pinyin": "shen shu",
+          "location": "腰部，第2腰椎棱突下，旁开春有1.5寸。",
+          "functions": "温补肾阳，固精益气，强腰健肾。",
+          "indications": "腰痛，腰酸，腰膝酸痛，小便不利，遂尿，遂尿多。",
+          "importance": 5
+        },
+        {
+          "id": 25,
+          "name": "Dachangshu",
+          "chineseName": "大肠俯",
+          "pinyin": "da chang shu",
+          "location": "腰部，第4腰椎棱突下，旁开春有1.5寸。",
+          "functions": "理气健脑，调理肠胃，消食导滑。",
+          "indications": "腹痛，腹泡，便秘，泰泰，痛经，病痛。",
+          "importance": 4
+        },
+        {
+          "id": 40,
+          "name": "Weizhong",
+          "chineseName": "委中",
+          "pinyin": "wei zhong",
+          "location": "膝窝横纹中点。",
+          "functions": "清热凉血，强腰健肾，活素利节。",
+          "indications": "腰痛，腰酸，腰膝酸痛，下肢痣痛，病痛。",
+          "importance": 5
+        },
+        {
+          "id": 57,
+          "name": "Chengshan",
+          "chineseName": "承山",
+          "pinyin": "cheng shan",
+          "location": "小腿后侧，当腿肚肠下端与趾蹄肠的连接处。",
+          "functions": "清热凉血，强腰健肾，活素利节。",
+          "indications": "腰痛，腰酸，腰膝酸痛，小腿痣痛，病痛。",
+          "importance": 4
+        },
+        {
+          "id": 60,
+          "name": "Kunlun",
+          "chineseName": "昆仑",
+          "pinyin": "kun lun",
+          "location": "足外蹄后方，当外蹄骨与趾蹄肠之间的凹陷处。",
+          "functions": "清热凉血，强腰健肾，活素利节。",
+          "indications": "头痛，颈项强直，腰痛，腰酸，足趾痛痛。",
+          "importance": 4
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "KIDNEY",
+      "name": "Kidney Meridian",
+      "chineseName": "足少阴肾经",
+      "color": "0x4B0082",
+      "ziwuliuzhu": {
+        "startHour": 13,
+        "startMinute": 0,
+        "endHour": 15,
+        "endMinute": 0,
+        "description": "申时（13:00-15:00）：足少阴肾经当令"
+      },
+      "acupoints": [
+        {
+          "id": 1,
+          "name": "Yongquan",
+          "chineseName": "涌泉",
+          "pinyin": "yong quan",
+          "location": "足底，当足前部凹陷处，约在足前1/3处。",
+          "functions": "温补肾阳，固精益气，强腰健肾。",
+          "indications": "头痛，头晕，失眠多梦，心惊悶，中暗。",
+          "importance": 5
+        },
+        {
+          "id": 3,
+          "name": "Taixi",
+          "chineseName": "太溪",
+          "pinyin": "tai xi",
+          "location": "足内蹄后方，当内蹄骨与趾蹄肠之间的凹陷处。",
+          "functions": "温补肾阳，固精益气，强腰健肾。",
+          "indications": "腰痛，腰酸，腰膝酸痛，小便不利，遂尿，遂尿多。",
+          "importance": 5
+        },
+        {
+          "id": 6,
+          "name": "Zhaohai",
+          "chineseName": "照海",
+          "pinyin": "zhao hai",
+          "location": "足内蹄下方，当内蹄骨下方的凹陷处。",
+          "functions": "温补肾阳，固精益气，宁神定志。",
+          "indications": "失眠多梦，心惊悶，心情不宁，遂尿，遂尿多。",
+          "importance": 4
+        },
+        {
+          "id": 7,
+          "name": "Fuliu",
+          "chineseName": "复溜",
+          "pinyin": "fu liu",
+          "location": "小腿内侧，当内蹄骨上方2寸。",
+          "functions": "温补肾阳，固精益气，强腰健肾。",
+          "indications": "腰痛，腰酸，腰膝酸痛，小便不利，遂尿，遂尿多。",
+          "importance": 4
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "PERICARDIUM",
+      "name": "Pericardium Meridian",
+      "chineseName": "手厥阴心包经",
+      "color": "0x800080",
+      "ziwuliuzhu": {
+        "startHour": 15,
+        "startMinute": 0,
+        "endHour": 17,
+        "endMinute": 0,
+        "description": "酉时（15:00-17:00）：手厥阴心包经当令"
+      },
+      "acupoints": [
+        {
+          "id": 3,
+          "name": "Quze",
+          "chineseName": "曲泽",
+          "pinyin": "qu ze",
+          "location": "肢窝横纹中，股二头肌腰肚的桥窝处。",
+          "functions": "清心泛热，宁神定志，导病下行。",
+          "indications": "心惊悶，失眠多梦，心情不宁，心惨，肢窝痛痛。",
+          "importance": 4
+        },
+        {
+          "id": 6,
+          "name": "Neiguan",
+          "chineseName": "内关",
+          "pinyin": "nei guan",
+          "location": "前臂掌侧，腕尺关节上2寸，当掌长肌与桌骨之间。",
+          "functions": "宁心安神，和胃利气，消食导滑。",
+          "indications": "心惊悶，失眠多梦，心情不宁，胃痛，恶心呕吐，消化不良。",
+          "importance": 5
+        },
+        {
+          "id": 7,
+          "name": "Daling",
+          "chineseName": "大陵",
+          "pinyin": "da ling",
+          "location": "腕部，腕横纹中点，当掌长肌腔屏骨之间。",
+          "functions": "清心泛热，宁神定志，导病下行。",
+          "indications": "心惊悶，失眠多梦，心情不宁，心惨，手掌热。",
+          "importance": 4
+        },
+        {
+          "id": 8,
+          "name": "Laogong",
+          "chineseName": "劳宫",
+          "pinyin": "lao gong",
+          "location": "手掌中央，当第3掌骨与第4掌骨之间，屏指尺寸处。",
+          "functions": "清心泛热，宁神定志，导病下行。",
+          "indications": "心惊悶，失眠多梦，心情不宁，心惨，手掌热。",
+          "importance": 4
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "TRIPLE_ENERGIZER",
+      "name": "Triple Energizer Meridian",
+      "chineseName": "手少阳三焦经",
+      "color": "0xFF00FF",
+      "ziwuliuzhu": {
+        "startHour": 17,
+        "startMinute": 0,
+        "endHour": 19,
+        "endMinute": 0,
+        "description": "戌时（17:00-19:00）：手少阳三焦经当令"
+      },
+      "acupoints": [
+        {
+          "id": 3,
+          "name": "Zhongzhu",
+          "chineseName": "中渝",
+          "pinyin": "zhong zhu",
+          "location": "手背部，第4掌骨与第5掌骨之间，当腔横纹后方。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "耳鸣，耳肖，听力下降，耳痛，手背痛痛。",
+          "importance": 4
+        },
+        {
+          "id": 5,
+          "name": "Waiguan",
+          "chineseName": "外关",
+          "pinyin": "wai guan",
+          "location": "前臂背侧，腕尺关节上2寸，当桌骨与尺骨之间。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "头痛，颈项强直，耳鸣，耳肖，手臂痛痛。",
+          "importance": 5
+        },
+        {
+          "id": 17,
+          "name": "Yifeng",
+          "chineseName": "翼风",
+          "pinyin": "yi feng",
+          "location": "耳后，当乳突与下颈之间的凹陷处。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "耳鸣，耳肖，听力下降，耳痛，面神经痫痛。",
+          "importance": 4
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "GALLBLADDER",
+      "name": "Gallbladder Meridian",
+      "chineseName": "足少阳胆经",
+      "color": "0xFFC0CB",
+      "ziwuliuzhu": {
+        "startHour": 19,
+        "startMinute": 0,
+        "endHour": 21,
+        "endMinute": 0,
+        "description": "亥时（19:00-21:00）：足少阳胆经当令"
+      },
+      "acupoints": [
+        {
+          "id": 20,
+          "name": "Fengchi",
+          "chineseName": "风池",
+          "pinyin": "feng chi",
+          "location": "颈部，当染发际与胸锥肌上端之间的凹陷处。",
+          "functions": "疏风清热，除热开窗，活素利节。",
+          "indications": "头痛，头晕，颈项强直，眼痛，眼花，耳鸣。",
+          "importance": 5
+        },
+        {
+          "id": 30,
+          "name": "Huantiao",
+          "chineseName": "环跳",
+          "pinyin": "huan tiao",
+          "location": "臀部，当股骨大转子与臀缝之间的凹陷处。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "腰痛，腰酸，腰膝酸痛，下肢痣痛，臀部痛痛。",
+          "importance": 4
+        },
+        {
+          "id": 34,
+          "name": "Yanglingquan",
+          "chineseName": "阳陵泉",
+          "pinyin": "yang ling quan",
+          "location": "小腿外侧，当股骨外侧蹄下方的凹陷处。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "腰痛，腰酸，腰膝酸痛，下肢痣痛，膝关节痛痛。",
+          "importance": 5
+        },
+        {
+          "id": 40,
+          "name": "Qiuxu",
+          "chineseName": "丘墅",
+          "pinyin": "qiu xu",
+          "location": "足外蹄前方，当足外蹄骨前下方的凹陷处。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "头痛，头晕，颈项强直，足蹄痛痛。",
+          "importance": 4
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "LIVER",
+      "name": "Liver Meridian",
+      "chineseName": "足厥阴肝经",
+      "color": "0x8B0000",
+      "ziwuliuzhu": {
+        "startHour": 21,
+        "startMinute": 0,
+        "endHour": 23,
+        "endMinute": 0,
+        "description": "亥时（21:00-23:00）：足厥阴肝经当令"
+      },
+      "acupoints": [
+        {
+          "id": 1,
+          "name": "Dadun",
+          "chineseName": "大敦",
+          "pinyin": "da dun",
+          "location": "足大指外侧，距指甲角0.1寸。",
+          "functions": "疏肝理气，清肝泛热，开窗空窝。",
+          "indications": "小便不利，遂尿，遂尿多，阴部痛痛，阴囊肿痛。",
+          "importance": 3
+        },
+        {
+          "id": 2,
+          "name": "Xingjian",
+          "chineseName": "行间",
+          "pinyin": "xing jian",
+          "location": "足大指与第2足趾之间，趾蹄连合部前方。",
+          "functions": "清肝泛热，疏肝理气，开窗空窝。",
+          "indications": "头痛，头晕，眼痛，眼花，阴部痛痛，阴囊肿痛。",
+          "importance": 4
+        },
+        {
+          "id": 3,
+          "name": "Taichong",
+          "chineseName": "太冲",
+          "pinyin": "tai chong",
+          "location": "足背，第1趾骨与第2趾骨之间，趾蹄连合部后方2寸。",
+          "functions": "疏肝理气，平肝息风，清肝泛热。",
+          "indications": "头痛，头晕，眼痛，眼花，失眠多梦，心惊悶，心情不宁。",
+          "importance": 5
+        },
+        {
+          "id": 8,
+          "name": "Ququan",
+          "chineseName": "曲泉",
+          "pinyin": "qu quan",
+          "location": "膝关节内侧，当膝关节内侧横纹上端。",
+          "functions": "清肝泛热，清热凉血，强腰健肾。",
+          "indications": "小便不利，遂尿，遂尿多，阴部痛痛，阴囊肿痛。",
+          "importance": 4
+        }
+      ]
+    }
+  ]
+}

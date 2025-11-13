@@ -1,0 +1,172 @@
+{
+  "meridians": [
+    {
+      "id": 3,
+      "type": "SPLEEN",
+      "name": "Spleen Meridian",
+      "chineseName": "足太阴脾经",
+      "color": "0x80FF00",
+      "ziwuliuzhu": {
+        "startHour": 5,
+        "startMinute": 0,
+        "endHour": 7,
+        "endMinute": 0,
+        "description": "卯时（05:00-07:00）：足太阴脾经当令"
+      },
+      "acupoints": [
+        {
+          "id": 3,
+          "name": "Taibai",
+          "chineseName": "太白",
+          "pinyin": "tai bai",
+          "location": "足内侧缘，第1趾蹄关节后下方赤白肉际处。",
+          "functions": "健脑和胃，化湿消肿，补中益气。",
+          "indications": "腹痛，腹泡，泰泰，便秘，消化不良。",
+          "importance": 4
+        },
+        {
+          "id": 6,
+          "name": "Sanyinjiao",
+          "chineseName": "三阴交",
+          "pinyin": "san yin jiao",
+          "location": "小腿内侧，内蹄骨后缘上，距内蹄骨顶点3寸。",
+          "functions": "健脑益气，补血活血，补肾固精。",
+          "indications": "泰泰，便秘，腹痛，消化不良，阴部痛痛，月经不调，不孕。",
+          "importance": 5
+        },
+        {
+          "id": 9,
+          "name": "Yinlingquan",
+          "chineseName": "阴陵泉",
+          "pinyin": "yin ling quan",
+          "location": "小腿内侧，股骨内侧蹄下缘，股骨内侧蹄与小腿股骨之间。",
+          "functions": "健脑利湿，利尿消肿，补中益气。",
+          "indications": "小便不利，泰泰，便秘，腹泡，腹痛，消化不良。",
+          "importance": 4
+        },
+        {
+          "id": 10,
+          "name": "Xuehai",
+          "chineseName": "血海",
+          "pinyin": "xue hai",
+          "location": "大腿内侧，股直肌上，距髁骨上缘2寸。",
+          "functions": "活血化湿，调经养血，清热凉血。",
+          "indications": "月经不调，经间腹痛，病痛，阴部痛痛，不孕。",
+          "importance": 4
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "HEART",
+      "name": "Heart Meridian",
+      "chineseName": "手少阴心经",
+      "color": "0x00FF00",
+      "ziwuliuzhu": {
+        "startHour": 7,
+        "startMinute": 0,
+        "endHour": 9,
+        "endMinute": 0,
+        "description": "巳时（07:00-09:00）：手少阴心经当令"
+      },
+      "acupoints": [
+        {
+          "id": 3,
+          "name": "Shaohai",
+          "chineseName": "少海",
+          "pinyin": "shao hai",
+          "location": "肢窝横纹内侧端，屈肢时形成的凹陷中。",
+          "functions": "清心泛热，宁神定志，活素利节。",
+          "indications": "心惊悶，失眠多梦，心情不宁，肢窝痛痛。",
+          "importance": 4
+        },
+        {
+          "id": 5,
+          "name": "Tongli",
+          "chineseName": "通里",
+          "pinyin": "tong li",
+          "location": "腕部掉骨沟内，腕横纹上方1.5寸。",
+          "functions": "清心泛热，宁神定志，开窗利咽。",
+          "indications": "心惊悶，失眠多梦，心情不宁，喉痛，失音。",
+          "importance": 4
+        },
+        {
+          "id": 7,
+          "name": "Shenmen",
+          "chineseName": "神门",
+          "pinyin": "shen men",
+          "location": "腕部，腕横纹尖端，小指侧腔屏骨桥窝处。",
+          "functions": "清心泛热，宁神定志，安神益智。",
+          "indications": "心惊悶，失眠多梦，心情不宁，心惨，健忘。",
+          "importance": 5
+        },
+        {
+          "id": 9,
+          "name": "Shaochong",
+          "chineseName": "少冲",
+          "pinyin": "shao chong",
+          "location": "小指桥侧，距指甲角0.1寸。",
+          "functions": "清心泛热，开窗空窝，苏醒开窗。",
+          "indications": "心惊悶，失眠多梦，心情不宁，中暗。",
+          "importance": 3
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "SMALL_INTESTINE",
+      "name": "Small Intestine Meridian",
+      "chineseName": "手太阳小肠经",
+      "color": "0x00FF80",
+      "ziwuliuzhu": {
+        "startHour": 9,
+        "startMinute": 0,
+        "endHour": 11,
+        "endMinute": 0,
+        "description": "午时（09:00-11:00）：手太阳小肠经当令"
+      },
+      "acupoints": [
+        {
+          "id": 3,
+          "name": "Houxi",
+          "chineseName": "后溪",
+          "pinyin": "hou xi",
+          "location": "手外侧，小指本节后，当第5掌骨小指侧后方的凹陷处。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "头痛，颈项强直，耳鸣，耳肖，小指痛痛。",
+          "importance": 4
+        },
+        {
+          "id": 6,
+          "name": "Yanglao",
+          "chineseName": "养老",
+          "pinyin": "yang lao",
+          "location": "腕部尖端，小指侧，当尖骨茅突与腰肚之间的凹陷处。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "眼痛，眼花，视力下降，腕痛，手臂痛痛。",
+          "importance": 4
+        },
+        {
+          "id": 11,
+          "name": "Tianzong",
+          "chineseName": "天宗",
+          "pinyin": "tian zong",
+          "location": "肝肩胸部，当肝甲下端，肝甲下端与肝骨之间。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "肩周痛，肩胸痛，肩关节活动受限。",
+          "importance": 4
+        },
+        {
+          "id": 19,
+          "name": "Tinggong",
+          "chineseName": "听宫",
+          "pinyin": "ting gong",
+          "location": "耳前，当下颜关节前，张口时形成的凹陷中。",
+          "functions": "疏经活素，除热开窗，活素利节。",
+          "indications": "耳鸣，耳肖，听力下降，耳痛，面神经痫痛。",
+          "importance": 4
+        }
+      ]
+    }
+  ]
+}
