@@ -6,85 +6,142 @@
 #include "enhanced_led_controller.hpp"
 #include "optimized_audio.hpp"
 
-static inline void sendJson(WebServer& server, int code, const String& body){ server.send(code, "application/json", body); }
+static inline void sendJson(WebServer &server, int code, const String &body) { server.send(code, "application/json", body); }
 
-static inline bool parseColorArg(const String& s, uint32_t& out)
+static inline bool parseColorArg(const String &s, uint32_t &out)
 {
-  int c1 = s.indexOf(','); if (c1 < 0) return false;
-  int c2 = s.indexOf(',', c1+1); if (c2 < 0) return false;
+  int c1 = s.indexOf(',');
+  if (c1 < 0)
+    return false;
+  int c2 = s.indexOf(',', c1 + 1);
+  if (c2 < 0)
+    return false;
   int r = s.substring(0, c1).toInt();
-  int g = s.substring(c1+1, c2).toInt();
-  int b = s.substring(c2+1).toInt();
-  if (r<0||r>255||g<0||g>255||b<0||b>255) return false;
-  out = ((uint32_t)(uint8_t)r<<16)|((uint32_t)(uint8_t)g<<8)|((uint32_t)(uint8_t)b);
+  int g = s.substring(c1 + 1, c2).toInt();
+  int b = s.substring(c2 + 1).toInt();
+  if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+    return false;
+  out = ((uint32_t)(uint8_t)r << 16) | ((uint32_t)(uint8_t)g << 8) | ((uint32_t)(uint8_t)b);
   return true;
 }
 
-static inline bool parseNoteToHz(const String& s, float& hzOut)
+static inline bool parseNoteToHz(const String &s, float &hzOut)
 {
   // Accept forms: "440" (Hz), or note names like A4, C#5, Db3
-  String t = s; t.trim();
+  String t = s;
+  t.trim();
   // try numeric Hz
-  bool allDigit=true; int dots=0;
-  for (size_t i=0;i<t.length();++i){ char c=t[i]; if(!(c>='0'&&c<='9')){ if(c=='.'&&dots==0){dots++;} else {allDigit=false; break;} }}
-  if (allDigit && t.length()>0) { hzOut = t.toFloat(); return hzOut>0; }
-  if (t.length()<2) return false;
-  char n = t[0];
-  int semiBase=-1000; // semitone offset of note letter from A within octave
-  switch(n){case 'C':semiBase=-9;break;case 'D':semiBase=-7;break;case 'E':semiBase=-5;break;case 'F':semiBase=-4;break;case 'G':semiBase=-2;break;case 'A':semiBase=0;break;case 'B':semiBase=2;break;default:return false;}
-  int idx=1; int accidental=0;
-  if (idx<t.length()){
-    if (t[idx]=='#' || t[idx]=='+' ) { accidental=+1; idx++; }
-    else if (t[idx]=='b' || t[idx]=='B' ) { accidental=-1; idx++; }
+  bool allDigit = true;
+  int dots = 0;
+  for (size_t i = 0; i < t.length(); ++i)
+  {
+    char c = t[i];
+    if (!(c >= '0' && c <= '9'))
+    {
+      if (c == '.' && dots == 0)
+      {
+        dots++;
+      }
+      else
+      {
+        allDigit = false;
+        break;
+      }
+    }
   }
-  if (idx>=t.length()) return false;
+  if (allDigit && t.length() > 0)
+  {
+    hzOut = t.toFloat();
+    return hzOut > 0;
+  }
+  if (t.length() < 2)
+    return false;
+  char n = t[0];
+  int semiBase = -1000; // semitone offset of note letter from A within octave
+  switch (n)
+  {
+  case 'C':
+    semiBase = -9;
+    break;
+  case 'D':
+    semiBase = -7;
+    break;
+  case 'E':
+    semiBase = -5;
+    break;
+  case 'F':
+    semiBase = -4;
+    break;
+  case 'G':
+    semiBase = -2;
+    break;
+  case 'A':
+    semiBase = 0;
+    break;
+  case 'B':
+    semiBase = 2;
+    break;
+  default:
+    return false;
+  }
+  int idx = 1;
+  int accidental = 0;
+  if (idx < t.length())
+  {
+    if (t[idx] == '#' || t[idx] == '+')
+    {
+      accidental = +1;
+      idx++;
+    }
+    else if (t[idx] == 'b' || t[idx] == 'B')
+    {
+      accidental = -1;
+      idx++;
+    }
+  }
+  if (idx >= t.length())
+    return false;
   int octave = t.substring(idx).toInt();
-  if (octave<-1 || octave>9) return false;
+  if (octave < -1 || octave > 9)
+    return false;
   // MIDI number: A4 = 69 at 440 Hz
-  int midi = 69 + (octave-4)*12 + (semiBase + accidental);
-  hzOut = 440.0f * powf(2.0f, (midi - 69)/12.0f);
-  return hzOut>0;
+  int midi = 69 + (octave - 4) * 12 + (semiBase + accidental);
+  hzOut = 440.0f * powf(2.0f, (midi - 69) / 12.0f);
+  return hzOut > 0;
 }
 
-inline void startAp(const char* ssid)
+inline void startAp(const char *ssid)
 {
   WiFi.mode(WIFI_AP);
   bool ok = WiFi.softAP(ssid);
-  Serial.printf("AP %s %s, IP: %s\n", ssid, ok?"started":"failed", WiFi.softAPIP().toString().c_str());
+  Serial.printf("AP %s %s, IP: %s\n", ssid, ok ? "started" : "failed", WiFi.softAPIP().toString().c_str());
 }
 
 inline void registerWeb(
-  WebServer& server,
-  const char* apSsid,
-  Mode& mode,
-  uint8_t& gBrightness,
-  uint16_t& powerLimit_mA,
-  uint8_t& ledFull_mA,
-  uint32_t& lastCurrentEst_mA,
-  EnhancedLEDController& ctrl,
-  OptimizedAudioAnalyzer& analyzer,
-  uint16_t& stepIndex,
-  uint8_t onboardL1,
-  uint8_t onboardL2,
-  bool& ledOverride,
-  uint8_t& ledOverrideL1,
-  uint8_t& ledOverrideL2,
-  bool& ledAudioMirror,
-  bool& renderOnboard,
-  bool& pitchArmed,
-  float& pitchTargetHz,
-  float& pitchConfThresh,
-  float& pitchTolCents,
-  bool& pitchMapEnable,
-  float& pitchMapScale,
-  float& pitchMapMinHz,
-  float& pitchMapMaxHz,
-  uint16_t defaultIntervalMs,
-  uint8_t defaultTail
-)
+    WebServer &server,
+    const char *apSsid,
+    Mode &mode,
+    uint8_t &gBrightness,
+    uint16_t &powerLimit_mA,
+    uint8_t &ledFull_mA,
+    uint32_t &lastCurrentEst_mA,
+    EnhancedLEDController &ctrl,
+    OptimizedAudioAnalyzer &analyzer,
+    uint16_t &stepIndex,
+    bool &pitchArmed,
+    float &pitchTargetHz,
+    float &pitchConfThresh,
+    float &pitchTolCents,
+    bool &pitchMapEnable,
+    float &pitchMapScale,
+    float &pitchMapMinHz,
+    float &pitchMapMaxHz,
+    uint16_t defaultIntervalMs,
+    uint8_t defaultTail)
 {
   // Root UI
-  server.on("/", HTTP_GET, [&server](){
+  server.on("/", HTTP_GET, [&server]()
+            {
     static const char html[] PROGMEM = R"HTML(
 <!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
 <title>Meridian Control</title>
@@ -136,20 +193,6 @@ inline void registerWeb(
   
   <div class="card">
     <div class=row>
-      <label>Onboard LEDs</label>
-      <label><input type=checkbox id=ov onchange="setOverride()"> Override</label>
-      <label style="margin-left:12px"><input type=checkbox id=lam onchange="setLedAudioMirror()"> Audio mirror</label>
-    </div>
-    
-    <div class=row>
-      <label>Render Target</label>
-      <label><input type=radio name=rt value=onboard checked onclick="setRender(1)"> Onboard</label>
-      <label><input type=radio name=rt value=strip onclick="setRender(0)"> Strip</label>
-    </div>
-  </div>
-  
-  <div class="card">
-    <div class=row>
       <label>Pitch Detection</label>
       <button onclick="armPitch()">Arm</button>
       <button onclick="fetch('/api/pitch?arm=0')">Disarm</button>
@@ -174,20 +217,6 @@ inline void registerWeb(
 </div>
 
 <script>
-async function setLedAudioMirror(){
-  const on=document.getElementById('lam').checked?1:0;
-  await fetch(`/api/led?audio_mirror=${on}`);
-}
-
-async function setOverride(){
-  const on=document.getElementById('ov').checked?1:0;
-  await fetch(`/api/led?override=${on}`);
-}
-
-async function setRender(onb){
-  await fetch(`/api/render?onboard=${onb}`);
-}
-
 async function armPitch(){
   await fetch(`/api/pitch?arm=1`);
 }
@@ -226,13 +255,8 @@ async function poll(){
     // Update UI based on state
     document.getElementById('brightness').value = j.brightness;
     document.getElementById('brightnessValue').textContent = j.brightness;
-    document.getElementById('ov').checked = j.led && j.led.override;
-    document.getElementById('lam').checked = j.led && j.led.audio_mirror;
     document.getElementById('pm').checked = j.pitchmap && j.pitchmap.enable;
     
-    // Update radio buttons
-    const rtButtons = document.getElementsByName('rt');
-    rtButtons[j.render.onboard ? 0 : 1].checked = true;
     
     // Update audio mode
     if (j.audio && typeof j.audio.mode === 'number') {
@@ -250,63 +274,49 @@ poll();
 </script>
 </body></html>
 )HTML";
-    server.send(200, "text/html", html);
-  });
+    server.send(200, "text/html", html); });
 
   // Pitch map: /api/pitchmap?enable=1&scale=1.0&min=110&max=880
-  server.on("/api/pitchmap", HTTP_GET, [&](){ if (server.hasArg("enable")) pitchMapEnable = (server.arg("enable").toInt()!=0); sendJson(server,200,String("{\"ok\":true,\"enable\":") + (pitchMapEnable?"true":"false") + "}"); });
+  server.on("/api/pitchmap", HTTP_GET, [&]()
+            { if (server.hasArg("enable")) pitchMapEnable = (server.arg("enable").toInt()!=0); sendJson(server,200,String("{\"ok\":true,\"enable\":") + (pitchMapEnable?"true":"false") + "}"); });
 
   // One-click: enable audio, override and mirror
   // removed one-click endpoint
 
-  // Render target switch: /api/render?onboard=1|0
-  server.on("/api/render", HTTP_GET, [&](){
-    if (!server.hasArg("onboard")) { sendJson(server,400,"{\"ok\":false,\"error\":\"onboard required\"}"); return; }
-    int v = server.arg("onboard").toInt(); renderOnboard = (v!=0);
-    sendJson(server,200, String("{\"ok\":true,\"onboard\":") + (renderOnboard?"true":"false") + "}");
-  });
-
   // Pitch: /api/pitch?arm=1&target=A4|440&conf=0.3&tol=50  or arm=0 to disarm
-  server.on("/api/pitch", HTTP_GET, [&](){
+  server.on("/api/pitch", HTTP_GET, [&]()
+            {
     if (!server.hasArg("arm")) { sendJson(server,400,"{\"ok\":false,\"error\":\"arm required\"}"); return; }
     int a = server.arg("arm").toInt(); pitchArmed = (a!=0);
-    sendJson(server,200, String("{\"ok\":true,\"armed\":") + (pitchArmed?"true":"false") + "}");
-  });
-
-  // Onboard LED override for testing without strip
-  server.on("/api/led", HTTP_GET, [&](){
-    if (server.hasArg("override")) { ledOverride = (server.arg("override").toInt()!=0); }
-    if (server.hasArg("audio_mirror")) { ledAudioMirror = (server.arg("audio_mirror").toInt()!=0); }
-    sendJson(server, 200, String("{\"ok\":true,\"override\":") + (ledOverride?"true":"false") +
-            String(",\"audio_mirror\":") + (ledAudioMirror?"true":"false") + "}");
-  });
+    sendJson(server,200, String("{\"ok\":true,\"armed\":") + (pitchArmed?"true":"false") + "}"); });
 
   // Audio control: /api/audio?enable=0/1 or /api/audio?set=1&sens=f&maxLen=n&low=r,g,b&mid=r,g,b&high=r,g,b
-  server.on("/api/audio", HTTP_GET, [&](){
+  server.on("/api/audio", HTTP_GET, [&]()
+            {
     if (!server.hasArg("enable")) { sendJson(server,400,"{\"ok\":false,\"error\":\"enable required\"}"); return; }
     ctrl.enableAudio(server.arg("enable").toInt()!=0);
-    sendJson(server, 200, "{\"ok\":true}");
-  });
-  
+    sendJson(server, 200, "{\"ok\":true}"); });
+
   // Audio mode control: /api/audio/mode?mode=0|1|2|3
-  server.on("/api/audio/mode", HTTP_GET, [&](){
+  server.on("/api/audio/mode", HTTP_GET, [&]()
+            {
     if (!server.hasArg("mode")) { sendJson(server,400,"{\"ok\":false,\"error\":\"mode required\"}"); return; }
     int mode = server.arg("mode").toInt();
     if (mode < 0) mode = 0;
     if (mode > 3) mode = 3;
     ctrl.setAudioMode(static_cast<AudioVisualizer::EffectType>(mode));
-    sendJson(server, 200, String("{\"ok\":true,\"mode\":") + String(mode) + "}");
-  });
-  server.on("/index.html", HTTP_GET, [&server](){ server.sendHeader("Location","/"); server.send(302); });
+    sendJson(server, 200, String("{\"ok\":true,\"mode\":") + String(mode) + "}"); });
+  server.on("/index.html", HTTP_GET, [&server]()
+            { server.sendHeader("Location","/"); server.send(302); });
 
   // API
-  server.on("/api/state", HTTP_GET, [&](){
+  server.on("/api/state", HTTP_GET, [&]()
+            {
     String s = "{";
     s += "\"mode\":\""; s += (mode==FLOW?"FLOW":"STEP"); s += "\",";
     s += "\"brightness\":"; s += String((int)gBrightness); s += ",";
     s += "\"power\":{";
       s += "\"limit_ma\":"; s += String((int)powerLimit_mA); s += ",";
-      s += "\"led_full_ma\":"; s += String((int)ledFull_mA); s += ",";
       s += "\"estimated_ma\":"; s += String((int)lastCurrentEst_mA);
     s += "},";
     s += "\"flow\":{";
@@ -317,13 +327,6 @@ poll();
     s += "\"audio\":{";
       s += "\"enabled\":"; s += ctrl.audioEnabled()?"true":"false"; s += ",";
       s += "\"mode\":"; s += String((int)ctrl.getAudioMode());
-    s += "},";
-    s += "\"render\":{";
-      s += "\"onboard\":"; s += renderOnboard?"true":"false";
-    s += "},";
-    s += "\"led\":{";
-      s += "\"override\":"; s += ledOverride?"true":"false"; s += ",";
-      s += "\"audio_mirror\":"; s += ledAudioMirror?"true":"false";
     s += "},";
     s += "\"pitchmap\":{";
       s += "\"enable\":"; s += pitchMapEnable?"true":"false"; s += ",";
@@ -341,23 +344,25 @@ poll();
       s += "\"index\":"; s += String((int)stepIndex);
     s += "}";
     s += "}";
-    sendJson(server, 200, s);
-  });
+    sendJson(server, 200, s); });
 
-  server.on("/api/flow/start", HTTP_GET, [&](){ ctrl.startFlow(); sendJson(server, 200, "{\"ok\":true}"); });
-  server.on("/api/flow/stop",  HTTP_GET, [&](){ ctrl.stopFlow();  sendJson(server, 200, "{\"ok\":true}"); });
+  server.on("/api/flow/start", HTTP_GET, [&]()
+            { ctrl.startFlow(); sendJson(server, 200, "{\"ok\":true}"); });
+  server.on("/api/flow/stop", HTTP_GET, [&]()
+            { ctrl.stopFlow();  sendJson(server, 200, "{\"ok\":true}"); });
 
   // removed flow config and point endpoints
 
-  server.on("/api/brightness", HTTP_GET, [&](){
+  server.on("/api/brightness", HTTP_GET, [&]()
+            {
     if (!server.hasArg("value")) { sendJson(server, 400, "{\"ok\":false,\"error\":\"value required\"}"); return; }
     int v = server.arg("value").toInt();
     if (v < 0) v = 0; if (v > 255) v = 255;
     gBrightness = (uint8_t)v;
-    sendJson(server, 200, String("{\"ok\":true,\"brightness\":") + String((int)gBrightness) + "}");
-  });
+    sendJson(server, 200, String("{\"ok\":true,\"brightness\":") + String((int)gBrightness) + "}"); });
 
-  server.on("/api/power", HTTP_GET, [&](){
+  server.on("/api/power", HTTP_GET, [&]()
+            {
     bool changed = false;
     if (server.hasArg("limit_ma")) { int v = server.arg("limit_ma").toInt(); if (v<0) v=0; if (v>100000) v=100000; powerLimit_mA = (uint16_t)v; changed = true; }
     if (server.hasArg("led_full_ma")) { int v = server.arg("led_full_ma").toInt(); if (v<=0) v=60; if (v>120) v=120; ledFull_mA = (uint8_t)v; changed = true; }
@@ -367,32 +372,21 @@ poll();
     s += "\"led_full_ma\":"; s += String((int)ledFull_mA); s += ",";
     s += "\"estimated_ma\":"; s += String((int)lastCurrentEst_mA);
     s += "}";
-    sendJson(server, 200, s);
-  });
-
-  // Test flash using onboard pins (if provided)
-  server.on("/api/test/flash", HTTP_GET, [=,&server](){
-    if (onboardL1!=255 && onboardL2!=255) {
-      digitalWrite(onboardL1, HIGH); digitalWrite(onboardL2, HIGH);
-      delay(150);
-      digitalWrite(onboardL1, LOW); digitalWrite(onboardL2, LOW);
-      delay(150);
-      digitalWrite(onboardL1, HIGH); digitalWrite(onboardL2, HIGH);
-      delay(150);
-      digitalWrite(onboardL1, LOW); digitalWrite(onboardL2, LOW);
-    }
-    sendJson(server, 200, "{\"ok\":true}");
-  });
+    sendJson(server, 200, s); });
 
   // Noise handlers
-  server.on("/favicon.ico", HTTP_GET, [&server](){ server.send(204); });
-  server.on("/robots.txt", HTTP_GET, [&server](){ server.send(200, "text/plain", "User-agent: *\nDisallow: /\n"); });
-  server.on("/generate_204", HTTP_GET, [&server](){ server.send(204); });
-  server.on("/hotspot-detect.html", HTTP_GET, [&server](){ server.sendHeader("Location","/"); server.send(302); });
-  server.onNotFound([&server](){
+  server.on("/favicon.ico", HTTP_GET, [&server]()
+            { server.send(204); });
+  server.on("/robots.txt", HTTP_GET, [&server]()
+            { server.send(200, "text/plain", "User-agent: *\nDisallow: /\n"); });
+  server.on("/generate_204", HTTP_GET, [&server]()
+            { server.send(204); });
+  server.on("/hotspot-detect.html", HTTP_GET, [&server]()
+            { server.sendHeader("Location","/"); server.send(302); });
+  server.onNotFound([&server]()
+                    {
     String s = String("{\"ok\":false,\"error\":\"not found\",\"path\":\"") + server.uri() + "\"}";
-    server.send(404, "application/json", s);
-  });
+    server.send(404, "application/json", s); });
 
   server.begin();
   Serial.printf("HTTP server started on %s\n", WiFi.softAPIP().toString().c_str());

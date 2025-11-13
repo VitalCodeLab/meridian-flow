@@ -6,8 +6,6 @@ extern const uint8_t LED_PIN;
 extern const uint8_t AUDIO_PIN;
 extern const uint8_t BUTTON_PIN;
 extern const bool BUTTON_ACTIVE_LOW;
-extern const uint8_t ONBOARD_L1;
-extern const uint8_t ONBOARD_L2;
 extern const uint16_t LED_COUNT;
 extern uint16_t gPowerLimit_mA;
 
@@ -18,7 +16,6 @@ extern uint16_t gPowerLimit_mA;
  * - LED灯带连接的GPIO引脚
  * - 音频输入连接的GPIO引脚
  * - 按钮连接的GPIO引脚及其激活电平
- * - 板载LED连接的GPIO引脚
  * - LED数量和功率限制设置
  */
 void checkHardwareConnections();

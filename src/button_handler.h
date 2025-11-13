@@ -13,7 +13,6 @@ extern bool gLedAudioMirror;
 extern uint8_t currentAudioMode;
 extern const char* audioModeNames[];
 extern const uint8_t AUDIO_MODE_COUNT;
-extern OnboardMirror mirror;
 
 /**
  * 按钮操作处理

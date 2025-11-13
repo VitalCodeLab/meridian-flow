@@ -65,8 +65,6 @@
   - 音频采集与分析（OptimizedAudioAnalyzer），音频相关处理函数：`updateAudioLog()`、`handleAudioEffects()`、`handlePitchDetection()`。
 - src/button_handler.h / .cpp
   - 去抖与按钮事件处理，函数：`handleButtonActions()`。
-- src/led_handler.h / .cpp
-  - 板载 LED（OnboardMirror）PWM 控制与显示，函数：`handleOnboardLEDs()`。
 - src/hardware_check.h / .cpp
   - 启动时硬件检测：`checkHardwareConnections()`。
 - src/webui.hpp / .cpp

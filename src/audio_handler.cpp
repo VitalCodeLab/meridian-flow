@@ -42,16 +42,7 @@ void handlePitchDetection() {
     if (cents <= gPitchTolCents) {
       gPitchLastHit = now;  // 更新上次呼应时间
       
-      // 视觉反馈
-      if (gLedOverride) {
-        // 如果启用了LED覆盖模式，使用L1脉冲
-        gLedOverrideL1 = 255;
-        gLedOverridePulseUntil = now + 300;  // 脉冲持续300ms
-      } else {
-        // 否则通过闪烁提供反馈
-        // 这里需要外部实现，在button_handler.cpp中处理
-      }
-      
+      // 视觉反馈：在当前索引位置设置绿色点
       // 在当前索引位置设置绿色点
       controller.point().setPoint(stepIndex, (0u<<16)|(255u<<8)|0u);  // RGB格式：绿色
     }

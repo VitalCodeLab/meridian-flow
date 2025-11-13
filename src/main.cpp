@@ -29,7 +29,6 @@
 // 引入拆分后的模块
 #include "audio_handler.h"
 #include "button_handler.h"
-#include "led_handler.h"
 #include "hardware_check.h"
 
 //---------- 配置参数 ----------//
@@ -58,24 +57,7 @@ uint16_t gPowerLimit_mA = 1500;  // 功率限制，0=禁用
 uint8_t gLedFull_mA = 60;        // 单个LED全白时的毫安数
 uint32_t gLastCurrentEst_mA = 0; // 当前帧的电流估计值
 
-// 板载LED配置 - 实际硬件连接
-const uint8_t ONBOARD_L1 = 12; // 板载LED1 连接到 GPIO12
-const uint8_t ONBOARD_L2 = 13; // 板载LED2 连接到 GPIO13
 uint16_t stepIndex = 0;        // 当前步进索引
-
-// LEDC通道配置
-const int LEDC_FREQ = 5000;  // PWM频率
-const int LEDC_RES_BITS = 8; // PWM分辨率
-const int LEDC_CH_L1 = 0;    // L1使用的通道
-const int LEDC_CH_L2 = 1;    // L2使用的通道
-
-// LED覆盖控制
-bool gLedOverride = false;                // 是否启用LED覆盖
-uint8_t gLedOverrideL1 = 0;               // L1的覆盖亮度
-uint8_t gLedOverrideL2 = 0;               // L2的覆盖亮度
-bool gPwmAttached = false;                // PWM是否已附加
-bool gLedAudioMirror = false;             // 音频映射到板载LED
-unsigned long gLedOverridePulseUntil = 0; // 覆盖脉冲结束时间
 
 // 音高检测控制
 bool gPitchArmed = false;              // 是否启用音高检测
@@ -85,8 +67,6 @@ float gPitchTolCents = 50.0f;          // 差异容差度
 unsigned long gPitchCooldownMs = 1200; // 冷却时间
 unsigned long gPitchLastHit = 0;       // 上次呼应时间
 
-// 渲染目标控制
-bool gRenderOnboard = true; // true=仅板载, false=灯带
 
 // 音高映射控制
 bool gPitchMapEnable = false;  // 是否启用音高映射
@@ -114,9 +94,8 @@ static EnhancedFlowEffect &flow = controller.flow();             // 流动效果
 static EnhancedPointEffect &point = controller.point();          // 点效果引用
 static EnhancedAudioEffect &audioEff = controller.audioEffect(); // 音频效果引用
 
-// 按钮和板载LED控制
+// 按钮控制
 DebouncedButton button(BUTTON_PIN, BUTTON_ACTIVE_LOW, DEBOUNCE_MS, LONG_PRESS_MS);
-OnboardMirror mirror(ONBOARD_L1, ONBOARD_L2, mode, flow);
 
 // 音频相关变量
 unsigned long lastAudioLogAt = 0; // 上次音频日志输出时间
@@ -140,20 +119,11 @@ void setup()
   // 检查硬件连接
   checkHardwareConnections();
 
-  // 初始化按钮和灯带控制器
+  // 初始化按钮、音频分析器和灯带控制器
   button.begin();
+  analyzer.begin();  // 初始化音频分析器
   controller.begin();
   flow.start();
-  mirror.begin();
-
-  // 设置板载LED的PWM通道
-  ledcSetup(LEDC_CH_L1, LEDC_FREQ, LEDC_RES_BITS);
-  ledcSetup(LEDC_CH_L2, LEDC_FREQ, LEDC_RES_BITS);
-
-  // 初始化音频分析器
-  analyzer.begin();
-
-  // 设置音频效果默认参数
   audioEff.setEnabled(false); // 默认禁用
   // 最大长度已在构造函数中设置
   audioEff.setSensitivity(1.2f); // 敏感度
@@ -163,20 +133,9 @@ void setup()
   startAp(apSsid);
 
   // 注册Web界面和控制API
-  registerWeb(server, apSsid,
-              // 模式和亮度控制
-              mode, gBrightness, gPowerLimit_mA, gLedFull_mA, gLastCurrentEst_mA,
-              // 控制器和分析器
-              controller, analyzer, stepIndex,
-              // 板载LED控制
-              ONBOARD_L1, ONBOARD_L2, gLedOverride, gLedOverrideL1, gLedOverrideL2, gLedAudioMirror,
-              // 渲染目标
-              gRenderOnboard,
-              // 音高检测参数
-              gPitchArmed, gPitchTargetHz, gPitchConfThresh, gPitchTolCents,
-              // 音高映射参数
-              gPitchMapEnable, gPitchMapScale, gPitchMapMinHz, gPitchMapMaxHz,
-              // 流动效果参数
+  registerWeb(server, apSsid, mode, gBrightness, gPowerLimit_mA, gLedFull_mA, gLastCurrentEst_mA,
+              controller, analyzer, stepIndex, gPitchArmed, gPitchTargetHz, gPitchConfThresh,
+              gPitchTolCents, gPitchMapEnable, gPitchMapScale, gPitchMapMinHz, gPitchMapMaxHz,
               FLOW_INTERVAL_MS, FLOW_TAIL);
 
   Serial.println("Setup complete, entering main loop");
@@ -189,7 +148,6 @@ void setup()
 // handleAudioEffects - 移动到 audio_handler.cpp
 // handlePitchDetection - 移动到 audio_handler.cpp
 // handleButtonActions - 移动到 button_handler.cpp
-// handleOnboardLEDs - 移动到 led_handler.cpp
 
 //---------- 主循环 ----------//
 
@@ -201,7 +159,6 @@ void setup()
  * 2. 功能模块处理：处理音频、音高检测和按钮交互
  * 3. Web服务器处理：响应Web请求
  * 4. 渲染处理：更新LED灯带状态
- * 5. 板载LED控制：管理板载LED指示灯
  *
  * 整个循环设计为非阻塞式，确保各个模块能够平滑运行。
  */
@@ -221,13 +178,7 @@ void loop()
   server.handleClient(); // 响应Web请求
 
   // 4. 渲染处理
-  if (!gRenderOnboard)
-  {
-    controller.tick(); // 如果渲染到灯带，更新灯带状态
-  }
-
-  // 5. 板载LED控制
-  handleOnboardLEDs(); // 管理板载LED指示灯
+  controller.tick(); // 更新灯带状态
 
   // 小延时以减轻 CPU 负载并稳定帧率
   delay(2);

@@ -13,9 +13,10 @@
  */
 class EnhancedLEDCanvas {
 public:
-  EnhancedLEDCanvas(uint16_t count, uint8_t pin) : numLeds_(count), pin_(pin) {
+  explicit EnhancedLEDCanvas(uint16_t count, uint8_t pin) : numLeds_(count), pin_(pin) {
     // 初始化FastLED
     switch(pin) {
+      case 0: FastLED.addLeds<WS2812B, 0>(leds_, numLeds_); break;  // 添加GPIO0支持
       case 2: FastLED.addLeds<WS2812B, 2>(leds_, numLeds_); break;
       case 3: FastLED.addLeds<WS2812B, 3>(leds_, numLeds_); break;
       case 4: FastLED.addLeds<WS2812B, 4>(leds_, numLeds_); break;
@@ -25,7 +26,7 @@ public:
       case 8: FastLED.addLeds<WS2812B, 8>(leds_, numLeds_); break;
       case 9: FastLED.addLeds<WS2812B, 9>(leds_, numLeds_); break;
       case 10: FastLED.addLeds<WS2812B, 10>(leds_, numLeds_); break;
-      default: FastLED.addLeds<WS2812B, 4>(leds_, numLeds_); break; // 默认使用GPIO4
+      default: FastLED.addLeds<WS2812B, 0>(leds_, numLeds_); break; // 默认使用GPIO0
     }
     clear();
   }

@@ -13,9 +13,6 @@ void checkHardwareConnections() {
   Serial.printf("Button connected to GPIO%d (active %s)\n", 
                 BUTTON_PIN, BUTTON_ACTIVE_LOW ? "LOW" : "HIGH");
   
-  // 检查板载LED引脚
-  Serial.printf("Onboard LEDs connected to GPIO%d and GPIO%d\n", ONBOARD_L1, ONBOARD_L2);
-  
   // 检查配置
   Serial.printf("LED count: %d, Power limit: %dmA\n", LED_COUNT, gPowerLimit_mA);
   

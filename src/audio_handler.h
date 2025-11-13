@@ -20,9 +20,6 @@ extern float gPitchConfThresh;
 extern float gPitchTolCents;
 extern unsigned long gPitchCooldownMs;
 extern unsigned long gPitchLastHit;
-extern bool gLedOverride;
-extern uint8_t gLedOverrideL1;
-extern unsigned long gLedOverridePulseUntil;
 extern uint16_t stepIndex;
 
 // 函数声明

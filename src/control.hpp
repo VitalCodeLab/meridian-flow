@@ -51,20 +51,3 @@ private:
 
 // 已在文件开头前向声明 EnhancedFlowEffect
 
-// 前向声明 OnboardMirror 类
-class OnboardMirror {
-public:
-  OnboardMirror(uint8_t l1, uint8_t l2, Mode& modeRef, EnhancedFlowEffect& flowRef);
-  void begin();
-  void flashStep(unsigned ms);
-  void tick();
-
-private:
-  uint8_t l1_, l2_;
-  Mode& mode_;
-  EnhancedFlowEffect& flow_;
-  unsigned long lastBlink_ = 0;
-  bool blinkState_ = false;
-  unsigned long stepFlashUntil_ = 0;
-};
-
