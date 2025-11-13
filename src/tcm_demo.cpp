@@ -670,7 +670,7 @@ String getMeridianChineseName(MeridianType type) {
   }
 }
 
-void setup() {
+void setupBak() {
   // 初始化串口
   Serial.begin(115200);
   Serial.println("\n中医经络循行模拟系统启动中...");
@@ -717,7 +717,7 @@ void setup() {
   Serial.println("系统就绪");
 }
 
-void loop() {
+void loopBak() {
   // 处理Web服务器请求
   server.handleClient();
   

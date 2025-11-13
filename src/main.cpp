@@ -34,7 +34,8 @@
 
 //---------- 配置参数 ----------//
 
-const uint8_t LED_PIN = 4; // 与文档一致，使用GPIO4
+// 实际硬件连接配置
+const uint8_t LED_PIN = 0; // WS2812B LED 连接到 GPIO0
 const uint16_t LED_COUNT = 60;
 const uint8_t BUTTON_PIN = 9;
 const bool BUTTON_ACTIVE_LOW = true;
@@ -57,9 +58,9 @@ uint16_t gPowerLimit_mA = 1500;  // 功率限制，0=禁用
 uint8_t gLedFull_mA = 60;        // 单个LED全白时的毫安数
 uint32_t gLastCurrentEst_mA = 0; // 当前帧的电流估计值
 
-// 板载LED配置
-const uint8_t ONBOARD_L1 = 12; // FLOW指示灯
-const uint8_t ONBOARD_L2 = 13; // STEP指示灯
+// 板载LED配置 - 实际硬件连接
+const uint8_t ONBOARD_L1 = 12; // 板载LED1 连接到 GPIO12
+const uint8_t ONBOARD_L2 = 13; // 板载LED2 连接到 GPIO13
 uint16_t stepIndex = 0;        // 当前步进索引
 
 // LEDC通道配置
@@ -153,7 +154,7 @@ void setup()
   analyzer.begin();
 
   // 设置音频效果默认参数
-  audioEff.setEnabled(false);    // 默认禁用
+  audioEff.setEnabled(false); // 默认禁用
   // 最大长度已在构造函数中设置
   audioEff.setSensitivity(1.2f); // 敏感度
 
