@@ -158,24 +158,53 @@ public:
   void setTail(uint8_t t) { tail_ = t; }
   void setInterval(uint16_t ms) { interval_ = ms; }
   
+  // 生成彩虹色
+  uint32_t wheel(byte wheelPos) {
+    wheelPos = 255 - wheelPos;
+    if(wheelPos < 85) {
+      return ((uint32_t)(255 - wheelPos * 3) << 16) | ((uint32_t)(wheelPos * 3) << 8);
+    } else if(wheelPos < 170) {
+      wheelPos -= 85;
+      return ((uint32_t)(wheelPos * 3) << 8) | (255 - wheelPos * 3);
+    } else {
+      wheelPos -= 170;
+      return ((uint32_t)(255 - wheelPos * 3) | ((uint32_t)wheelPos * 3 << 16));
+    }
+  }
+
   void render(unsigned long now) override {
     if (!running_ || path_.size() == 0) return;
-    if (now - lastStepAt_ < interval_) return;
     
-    lastStepAt_ = now;
-    head_ = (head_ + 1) % path_.size();
+    // 使用时间戳计算颜色变化，而不是步进
+    static uint8_t hue = 0;
+    hue++;
     
+    // 更新头部位置，基于时间而不是固定步进
+    if (now - lastStepAt_ >= interval_) {
+      lastStepAt_ = now;
+      head_ = (head_ + 1) % path_.size();
+    }
+    
+    // 清除画布
+    path_.canvas().clear();
+    
+    // 绘制流动效果
     for (uint8_t k = 0; k <= tail_; ++k) {
       uint16_t idxInPath = (head_ + path_.size() - k) % path_.size();
       uint16_t ledIdx = path_.node(idxInPath);
-      uint8_t s = (uint8_t)(255 - (255 * k) / (tail_ + 1));
       
-      // 缩放颜色
-      uint8_t r = ((color_ >> 16) & 0xFF) * s / 255;
-      uint8_t g = ((color_ >> 8) & 0xFF) * s / 255;
-      uint8_t b = (color_ & 0xFF) * s / 255;
+      // 计算拖尾亮度
+      uint8_t brightness = 255 - (255 * k) / (tail_ + 1);
       
-      path_.canvas().blendPixel(ledIdx, (r << 16) | (g << 8) | b);
+      // 计算颜色，使用色相偏移创建彩虹效果
+      uint32_t color = wheel(hue + (k * 2));
+      
+      // 应用亮度
+      uint8_t r = ((color >> 16) & 0xFF) * brightness / 255;
+      uint8_t g = ((color >> 8) & 0xFF) * brightness / 255;
+      uint8_t b = (color & 0xFF) * brightness / 255;
+      
+      path_.canvas().setPixel(ledIdx, (r << 16) | (g << 8) | b);
     }
   }
 

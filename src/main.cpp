@@ -122,10 +122,21 @@ void setup()
   // 初始化按钮、音频分析器和灯带控制器
   button.begin();
   analyzer.begin();  // 初始化音频分析器
+  
+  // 设置全局亮度
+  gBrightness = 60;  // 设置亮度为60
+  
+  // 初始化LED控制器
   controller.begin();
-  flow.start();
-  audioEff.setEnabled(false); // 默认禁用
-  // 最大长度已在构造函数中设置
+  
+  // 配置流动效果
+  flow.setColor(0x00FF00);  // 初始颜色为绿色
+  flow.setTail(15);         // 增加拖尾长度使效果更平滑
+  flow.setInterval(30);     // 减小间隔使流动更流畅
+  flow.start();             // 启动流动效果
+  
+  // 禁用音频效果
+  audioEff.setEnabled(false);
   audioEff.setSensitivity(1.2f); // 敏感度
 
   // 启动WiFi接入点并注册Web界面
