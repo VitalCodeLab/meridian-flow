@@ -57,7 +57,7 @@ uint16_t gPowerLimit_mA = 1500;  // 功率限制，0=禁用
 uint8_t gLedFull_mA = 60;        // 单个LED全白时的毫安数
 uint32_t gLastCurrentEst_mA = 0; // 当前帧的电流估计值
 
-uint16_t stepIndex = 0;        // 当前步进索引
+uint16_t stepIndex = 0; // 当前步进索引
 
 // 音高检测控制
 bool gPitchArmed = false;              // 是否启用音高检测
@@ -66,7 +66,6 @@ float gPitchConfThresh = 0.3f;         // 置信度阈值
 float gPitchTolCents = 50.0f;          // 差异容差度
 unsigned long gPitchCooldownMs = 1200; // 冷却时间
 unsigned long gPitchLastHit = 0;       // 上次呼应时间
-
 
 // 音高映射控制
 bool gPitchMapEnable = false;  // 是否启用音高映射
@@ -121,20 +120,20 @@ void setup()
 
   // 初始化按钮、音频分析器和灯带控制器
   button.begin();
-  analyzer.begin();  // 初始化音频分析器
-  
+  analyzer.begin(); // 初始化音频分析器
+
   // 设置全局亮度
-  gBrightness = 60;  // 设置亮度为60
-  
+  gBrightness = 60; // 设置亮度为60
+
   // 初始化LED控制器
   controller.begin();
-  
+
   // 配置流动效果
-  flow.setColor(0x00FF00);  // 初始颜色为绿色
-  flow.setTail(15);         // 增加拖尾长度使效果更平滑
-  flow.setInterval(30);     // 减小间隔使流动更流畅
-  flow.start();             // 启动流动效果
-  
+  flow.setColor(0x00FF00); // 初始颜色为绿色
+  flow.setTail(30);        // 增加拖尾长度使效果更平滑
+  flow.setInterval(30);    // 减小间隔使流动更流畅
+  flow.start();            // 启动流动效果
+
   // 禁用音频效果
   audioEff.setEnabled(false);
   audioEff.setSensitivity(1.2f); // 敏感度
