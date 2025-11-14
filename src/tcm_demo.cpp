@@ -25,15 +25,15 @@ String getMeridianChineseName(MeridianType type) {
     case LUNG: return "手太阴肺经";
     case LARGE_INTESTINE: return "手阳明大肠经";
     case STOMACH: return "足阳明胃经";
-    case SPLEEN: return "足太阴脏经";
+    case SPLEEN: return "足太阴脾经";
     case HEART: return "手少阴心经";
     case SMALL_INTESTINE: return "手太阳小肠经";
-    case BLADDER: return "足太阳膜胱经";
+    case BLADDER: return "足太阳膀胱经";
     case KIDNEY: return "足少阴肾经";
-    case PERICARDIUM: return "手厚阴心包经";
+    case PERICARDIUM: return "手厥阴心包经";
     case TRIPLE_ENERGIZER: return "手少阳三焦经";
     case GALLBLADDER: return "足少阳胆经";
-    case LIVER: return "足厚阴肝经";
+    case LIVER: return "足厥阴肝经";
     default: return "未知经络";
   }
 }
@@ -46,6 +46,7 @@ MeridianType currentMeridian = LUNG;
 bool autoModeEnabled = false;        // 自动模式开关
 bool ziwuliuzhuEnabled = false;      // 子午流注开关
 unsigned long lastAutoUpdateTime = 0; // 上次自动更新时间
+unsigned long autoSwitchIntervalMs = 30000; // 自动切换间隔（毫秒），默认30秒
 
 // 启动动画
 void startupAnimation() {
@@ -626,6 +627,10 @@ void setupWebServer() {
       int interval = server.arg("value").toInt();
       if (interval < 5) interval = 5;
       if (interval > 60) interval = 60;
+
+      // 转换为毫秒并更新全局变量
+      autoSwitchIntervalMs = (unsigned long)interval * 1000UL;
+
       server.send(200, "text/plain", "自动切换间隔已设置为" + String(interval) + "秒");
     } else {
       server.send(400, "text/plain", "缺少参数");
@@ -649,25 +654,6 @@ void setupWebServer() {
   
   // 启动服务器
   server.begin();
-}
-
-// 获取经络中文名称
-String getMeridianChineseName(MeridianType type) {
-  switch (type) {
-    case LUNG: return "手太阴肺经";
-    case LARGE_INTESTINE: return "手阳明大肠经";
-    case STOMACH: return "足阳明胃经";
-    case SPLEEN: return "足太阴脾经";
-    case HEART: return "手少阴心经";
-    case SMALL_INTESTINE: return "手太阳小肠经";
-    case BLADDER: return "足太阳膀胱经";
-    case KIDNEY: return "足少阴肾经";
-    case PERICARDIUM: return "手厥阴心包经";
-    case TRIPLE_ENERGIZER: return "手少阳三焦经";
-    case GALLBLADDER: return "足少阳胆经";
-    case LIVER: return "足厥阴肝经";
-    default: return "未知经络";
-  }
 }
 
 void setupBak() {
@@ -726,8 +712,8 @@ void loopBak() {
   
   // 如果启用了自动模式和子午流注
   if (autoModeEnabled && ziwuliuzhuEnabled) {
-    // 每30秒自动切换一次
-    if (currentTime - lastAutoUpdateTime > 30000) { // 30秒
+    // 根据可配置的自动切换间隔进行切换
+    if (currentTime - lastAutoUpdateTime > autoSwitchIntervalMs) {
       lastAutoUpdateTime = currentTime;
       
       // 获取当前活跃经络
@@ -743,48 +729,4 @@ void loopBak() {
   }
   
   delay(10);
-}
-
-// 启动动画
-void startupAnimation() {
-  // 创建临时的LED数组
-  CRGB leds[LED_COUNT];
-  
-  // 从中间向两端扩散的白光
-  int middle = LED_COUNT / 2;
-  for (int i = 0; i <= middle; i++) {
-    // 清除所有LED
-    for (int j = 0; j < LED_COUNT; j++) {
-      leds[j] = CRGB::Black;
-    }
-    
-    // 设置当前活跃的LED
-    if (middle - i >= 0) {
-      leds[middle - i] = CRGB::White;
-    }
-    if (middle + i < LED_COUNT) {
-      leds[middle + i] = CRGB::White;
-    }
-    
-    // 显示
-    FastLED.showColor(CRGB::Black); // 先清除所有
-    for (int j = 0; j < LED_COUNT; j++) {
-      if (leds[j] != CRGB::Black) {
-        meridianSystem.showPixel(j, leds[j]);
-      }
-    }
-    delay(5);
-  }
-  
-  // 淡出
-  for (int brightness = 255; brightness >= 0; brightness -= 5) {
-    FastLED.setBrightness(brightness);
-    FastLED.show();
-    delay(10);
-  }
-  
-  // 重置亮度
-  FastLED.setBrightness(BRIGHTNESS);
-  FastLED.clear();
-  FastLED.show();
 }
