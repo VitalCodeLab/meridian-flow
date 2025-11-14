@@ -17,6 +17,20 @@ static TCMMeridianSystem *meridianSystem = nullptr;
 extern EnhancedLEDController controller;
 extern bool gTcmMode;
 
+// 供主循环调用的 TCM 动画驱动函数（非阻塞）
+void tcmTick() {
+  if (meridianSystem) {
+    meridianSystem->tickFlow();
+  }
+}
+
+// 停止当前 TCM 动画
+void stopTcmFlow() {
+  if (meridianSystem) {
+    meridianSystem->stopFlow();
+  }
+}
+
 // 获取经络中文名称
 String getMeridianChineseName(MeridianType type) {
   switch (type) {
@@ -78,6 +92,8 @@ void registerTcmRoutes(WebServer &server) {
       if (meridian >= 0 && meridian < 12) {
         currentMeridian = static_cast<MeridianType>(meridian);
         gTcmMode = true;
+        // 切换经络时停止当前循行动画，避免继续流动
+        stopTcmFlow();
         if (meridianSystem) {
           meridianSystem->showMeridian(currentMeridian);
         }
@@ -93,6 +109,8 @@ void registerTcmRoutes(WebServer &server) {
   // 显示当前经络
   server.on("/api/show", HTTP_GET, [&server]() {
     gTcmMode = true;
+    // 显示静态经络前停止任何正在进行的循行
+    stopTcmFlow();
     meridianSystem->showMeridian(currentMeridian);
     server.send(200, "text/plain", "显示" + getMeridianChineseName(currentMeridian));
   });
@@ -100,6 +118,8 @@ void registerTcmRoutes(WebServer &server) {
   // 显示所有经络
   server.on("/api/showall", HTTP_GET, [&server]() {
     gTcmMode = true;
+    // 显示静态全身经络前停止当前循行动画
+    stopTcmFlow();
     meridianSystem->showAllMeridians();
     server.send(200, "text/plain", "显示所有经络");
   });
@@ -116,7 +136,8 @@ void registerTcmRoutes(WebServer &server) {
     gTcmMode = true;
     server.send(200, "text/plain", "正在模拟" + getMeridianChineseName(currentMeridian) + "循行");
 
-    meridianSystem->flowMeridian(currentMeridian, 5, 100 - speed);
+    // 使用非阻塞动画：在主循环中通过 tickFlow 推进
+    meridianSystem->startSingleFlow(currentMeridian, 5, 100 - speed);
   });
 
   // 模拟全身经络循行
@@ -131,7 +152,8 @@ void registerTcmRoutes(WebServer &server) {
     gTcmMode = true;
     server.send(200, "text/plain", "正在模拟全身经络循行");
 
-    meridianSystem->flowAllMeridians(100 - speed);
+    // 非阻塞全身循行
+    meridianSystem->startAllFlow(5, 100 - speed);
   });
 
   // 按当前子午流注经络循行一次
@@ -146,8 +168,8 @@ void registerTcmRoutes(WebServer &server) {
     gTcmMode = true;
     server.send(200, "text/plain", "正在按当前子午流注经络循行");
 
-    // 使用子午流注计算当前当令经络并执行一次循行
-    meridianSystem->flowCurrentTimeMeridian(5, 100 - speed);
+    // 非阻塞：计算当前当令经络并由状态机执行一次循行
+    meridianSystem->startCurrentTimeFlow(5, 100 - speed);
   });
 
   // 设置亮度（TCM 专用）

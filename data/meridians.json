@@ -6,6 +6,7 @@
       "name": "Lung Meridian",
       "chineseName": "手太阴肺经",
       "color": "0xFF0000",
+      "enabled": true,
       "ziwuliuzhu": {
         "startHour": 23,
         "startMinute": 0,
@@ -102,6 +103,7 @@
       "name": "Large Intestine Meridian",
       "chineseName": "手阳明大肠经",
       "color": "0xFFA500",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 1,
         "startMinute": 0,
@@ -178,6 +180,7 @@
       "name": "Stomach Meridian",
       "chineseName": "足阳明胃经",
       "color": "0xFFFF00",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 3,
         "startMinute": 0,

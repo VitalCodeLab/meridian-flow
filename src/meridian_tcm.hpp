@@ -26,6 +26,8 @@ struct MeridianInfo {
   const char* name;        // 经络名称
   const char* chineseName; // 经络中文名称
   CRGB color;              // 经络颜色
+  bool enabled;            // 是否启用该经络
+  bool hasCustomRange;     // 是否来自配置的自定义灯带区间
   uint16_t startIndex;     // 起始索引
   uint16_t length;         // 长度
   std::vector<uint16_t> acupoints; // 穴位索引列表
@@ -125,8 +127,8 @@ public:
     // 计算经络起始位置
     calculateMeridianStartIndices();
     
-    // 初始化穴位
-    initAcupointsFromConfig();
+    // 初始化穴位（使用已有的示例/常用穴位逻辑，避免未初始化指针）
+    initAcupoints();
     
     Serial.printf("成功加载 %d 条经络和 %d 个穴位\n", 
                  meridians_.size(), acupoints_.size());
@@ -299,6 +301,26 @@ public:
     }
   }
   
+  // ---------- 非阻塞版经络循行接口（在 loop 中通过 tickFlow 调用） ----------
+
+  // 启动单条经络循行（非阻塞，一次性播放）
+  void startSingleFlow(MeridianType type, uint8_t tailLength = 5, uint16_t interval = 30);
+
+  // 启动全身经络依次循行（非阻塞，一次性播放）
+  void startAllFlow(uint8_t tailLength = 5, uint16_t interval = 30);
+
+  // 按当前子午流注对应经络启动一次循行（非阻塞）
+  void startCurrentTimeFlow(uint8_t tailLength = 5, uint16_t interval = 30);
+
+  // 停止当前动画（保持最后一帧画面）
+  void stopFlow();
+
+  // 在主循环中周期调用，用于推进一帧动画
+  void tickFlow();
+
+  // 是否有动画在进行中
+  bool isFlowActive() const { return flowMode_ != FLOW_NONE; }
+  
   // 获取经络信息
   const std::vector<MeridianInfo>& getMeridians() const {
     return meridians_;
@@ -401,6 +423,24 @@ private:
   std::vector<ZiwuliuzhuTimeSlot> ziwuliuzhuTimeSlots_;
   bool ownsLeds_;
   
+  // 非阻塞动画状态机
+  enum FlowMode {
+    FLOW_NONE,
+    FLOW_SINGLE,
+    FLOW_ALL
+  };
+
+  FlowMode flowMode_ = FLOW_NONE;
+  uint8_t flowTailLength_ = 5;
+  uint16_t flowIntervalMs_ = 30;
+  uint32_t lastFlowStepMs_ = 0;
+  uint16_t flowHead_ = 0;              // 当前 head 位置
+  size_t flowMeridianIndex_ = 0;       // FLOW_ALL 模式下当前经络索引
+  bool flowInPause_ = false;           // 全身模式经络间暂停标志
+  uint32_t flowPauseEndMs_ = 0;        // 暂停结束时间
+  uint16_t flowPauseMs_ = 500;         // 经络之间的暂停时间
+  MeridianType flowSingleMeridian_ = LUNG; // 单经模式下的经络
+  
   // 检查当前时间是否在指定时间段内
   bool isTimeInSlot(uint8_t hour, uint8_t minute, const ZiwuliuzhuTimeSlot& slot) {
     // 转换为分钟计数便于比较
@@ -421,13 +461,71 @@ private:
   
   // 计算经络起始位置
   void calculateMeridianStartIndices() {
-    // 计算每条经络的长度
-    uint16_t ledsPerMeridian = numLeds_ / meridians_.size();
-    uint16_t remainder = numLeds_ % meridians_.size();
+    if (meridians_.empty()) {
+      return;
+    }
+
+    // 先判断是否有任意经络在配置中显式指定了 startIndex/length
+    bool anyCustomRange = false;
+    for (const auto& meridian : meridians_) {
+      if (meridian.hasCustomRange && meridian.enabled) {
+        anyCustomRange = true;
+        break;
+      }
+    }
+
+    if (anyCustomRange) {
+      // 有配置的情况下：直接尊重每条经络在 JSON 中给出的区间
+      for (auto& meridian : meridians_) {
+        if (!meridian.enabled || !meridian.hasCustomRange) {
+          // 未启用或未配置区间的经络，不占用灯珠
+          meridian.startIndex = 0;
+          meridian.length = 0;
+          continue;
+        }
+
+        // 边界保护：防止越界
+        if (meridian.startIndex >= numLeds_) {
+          meridian.startIndex = 0;
+          meridian.length = 0;
+          continue;
+        }
+        if (meridian.startIndex + meridian.length > numLeds_) {
+          meridian.length = numLeds_ - meridian.startIndex;
+        }
+      }
+      return;
+    }
+
+    // 没有任何自定义布局：按启用的经络均分整条灯带
+    size_t enabledCount = 0;
+    for (const auto& meridian : meridians_) {
+      if (meridian.enabled) {
+        enabledCount++;
+      }
+    }
+
+    if (enabledCount == 0) {
+      // 所有经络都被禁用，则不分配灯珠
+      for (auto& meridian : meridians_) {
+        meridian.startIndex = 0;
+        meridian.length = 0;
+      }
+      return;
+    }
+
+    uint16_t ledsPerMeridian = numLeds_ / enabledCount;
+    uint16_t remainder = numLeds_ % enabledCount;
     uint16_t currentIndex = 0;
-    
+
     // 设置每条经络的起始位置和长度
     for (auto& meridian : meridians_) {
+      if (!meridian.enabled) {
+        meridian.startIndex = 0;
+        meridian.length = 0;
+        continue;
+      }
+
       meridian.startIndex = currentIndex;
       meridian.length = ledsPerMeridian + (remainder-- > 0 ? 1 : 0);
       currentIndex += meridian.length;

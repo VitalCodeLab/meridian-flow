@@ -6,6 +6,7 @@
       "name": "Spleen Meridian",
       "chineseName": "足太阴脾经",
       "color": "0x80FF00",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 5,
         "startMinute": 0,
@@ -62,6 +63,7 @@
       "name": "Heart Meridian",
       "chineseName": "手少阴心经",
       "color": "0x00FF00",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 7,
         "startMinute": 0,
@@ -118,6 +120,7 @@
       "name": "Small Intestine Meridian",
       "chineseName": "手太阳小肠经",
       "color": "0x00FF80",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 9,
         "startMinute": 0,

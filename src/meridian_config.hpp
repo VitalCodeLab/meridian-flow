@@ -75,7 +75,23 @@ public:
         (colorHex >> 8) & 0xFF,   // G
         colorHex & 0xFF           // B
       );
-      
+
+      // 启用状态与自定义区间（可选字段）
+      meridian.enabled = true;          // 默认启用
+      meridian.hasCustomRange = false;  // 默认无自定义区间
+      meridian.startIndex = 0;
+      meridian.length = 0;
+
+      if (meridianObj.containsKey("enabled")) {
+        meridian.enabled = meridianObj["enabled"].as<bool>();
+      }
+
+      if (meridianObj.containsKey("startIndex") && meridianObj.containsKey("length")) {
+        meridian.startIndex = meridianObj["startIndex"].as<uint16_t>();
+        meridian.length = meridianObj["length"].as<uint16_t>();
+        meridian.hasCustomRange = true;
+      }
+
       // 子午流注信息
       JsonObject ziwuObj = meridianObj["ziwuliuzhu"];
       ZiwuliuzhuTimeSlot timeSlot;

@@ -6,6 +6,7 @@
       "name": "Bladder Meridian",
       "chineseName": "足太阳膀胱经",
       "color": "0x0000FF",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 11,
         "startMinute": 0,
@@ -82,6 +83,7 @@
       "name": "Kidney Meridian",
       "chineseName": "足少阴肾经",
       "color": "0x4B0082",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 13,
         "startMinute": 0,
@@ -138,6 +140,7 @@
       "name": "Pericardium Meridian",
       "chineseName": "手厥阴心包经",
       "color": "0x800080",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 15,
         "startMinute": 0,
@@ -194,6 +197,7 @@
       "name": "Triple Energizer Meridian",
       "chineseName": "手少阳三焦经",
       "color": "0xFF00FF",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 17,
         "startMinute": 0,
@@ -240,6 +244,7 @@
       "name": "Gallbladder Meridian",
       "chineseName": "足少阳胆经",
       "color": "0xFFC0CB",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 19,
         "startMinute": 0,
@@ -296,6 +301,7 @@
       "name": "Liver Meridian",
       "chineseName": "足厥阴肝经",
       "color": "0x8B0000",
+      "enabled": false,
       "ziwuliuzhu": {
         "startHour": 21,
         "startMinute": 0,

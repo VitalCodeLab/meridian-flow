@@ -67,6 +67,10 @@ float gPitchTolCents = 50.0f;          // 差异容差度
 unsigned long gPitchCooldownMs = 1200; // 冷却时间
 unsigned long gPitchLastHit = 0;       // 上次呼应时间
 
+// Pitch 命中点显示状态
+bool gPitchPointActive = false;
+unsigned long gPitchPointLastOn = 0;
+
 // 音高映射控制
 bool gPitchMapEnable = false;  // 是否启用音高映射
 float gPitchMapScale = 1.0f;   // 敏感度 0..2
@@ -110,6 +114,8 @@ bool gTcmMode = false;
 // TCM 经络系统初始化与路由注册（在 tcm_demo.cpp 中实现）
 extern void initTcmSystem();
 extern void registerTcmRoutes(WebServer &server);
+extern void tcmTick();
+extern void stopTcmFlow();
 
 // 硬件检查函数已移至hardware_check.cpp
 
@@ -165,7 +171,14 @@ void setup()
       return;
     }
     int en = server.arg("enable").toInt();
-    gTcmMode = (en != 0);
+    bool newMode = (en != 0);
+
+    if (!newMode && gTcmMode) {
+      // 关闭 TCM 模式时，停止任何正在进行的经络动画
+      stopTcmFlow();
+    }
+
+    gTcmMode = newMode;
     server.send(200, "application/json", String("{\"ok\":true,\"tcm\":") + (gTcmMode?"true":"false") + "}");
   });
 
@@ -201,13 +214,22 @@ void loop()
   // 1. 输入处理
   button.poll();   // 检测按钮状态变化
 
-  // 如果未启用 TCM 模式，才采集音频并运行音频相关逻辑
+  // 如果未启用 TCM 模式，且确实需要音频相关功能时，才采集音频并运行音频逻辑
   if (!gTcmMode)
   {
-    analyzer.tick();      // 采集和分析音频数据
-    updateAudioLog();     // 音频状态日志
-    handleAudioEffects(); // 音频效果处理
-    handlePitchDetection(); // 音高检测
+    // 需要音频处理的条件：
+    // 1) 已启用音频可视化效果（/api/audio?enable=1），或
+    // 2) 已武装音高检测，或
+    // 3) 启用了音高映射到长度功能
+    bool audioNeeded = controller.audioEnabled() || gPitchArmed || gPitchMapEnable;
+
+    if (audioNeeded)
+    {
+      analyzer.tick();      // 采集和分析音频数据
+      updateAudioLog();     // 音频状态日志（内部已再次判断是否启用音频）
+      handleAudioEffects(); // 音频效果处理
+      handlePitchDetection(); // 音高检测
+    }
   }
 
   // 按钮交互始终可用（用于切换 FLOW/STEP 等）
@@ -220,6 +242,11 @@ void loop()
   if (!gTcmMode)
   {
     controller.tick(); // 更新灯带状态
+  }
+  else
+  {
+    // TCM 模式下通过 tcmTick() 推进非阻塞经络动画
+    tcmTick();
   }
 
   // 小延时以减轻 CPU 负载并稳定帧率

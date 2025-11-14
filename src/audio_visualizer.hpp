@@ -197,15 +197,36 @@ public:
       hue = 360.0f * log(pitch / minHz_) / log(maxHz_ / minHz_);
     }
     
+    // 根据音高在[minHz_, maxHz_]区间的位置决定显示长度（低音短，高音长）
+    float pitchNorm = 0.0f;
+    if (pitch > 0) {
+      if (pitch <= minHz_) pitchNorm = 0.0f;
+      else if (pitch >= maxHz_) pitchNorm = 1.0f;
+      else pitchNorm = log(pitch / minHz_) / log(maxHz_ / minHz_);
+    }
+    if (pitchNorm < 0.0f) pitchNorm = 0.0f;
+    if (pitchNorm > 1.0f) pitchNorm = 1.0f;
+
+    // 将 pitchNorm 量化为 1~7 级，表示类似 1 2 3 4 5 6 7
+    int degree = 1 + (int)(pitchNorm * 7.0f);
+    if (degree < 1) degree = 1;
+    if (degree > 7) degree = 7;
+
+    int activeLength = (numLeds * degree) / 7;
+    if (activeLength < 1 && pitch > 0) activeLength = 1; // 有有效音高时至少点亮1颗
+
     // 转换为HSV颜色
     CHSV hsv((uint8_t)(hue * 255.0f / 360.0f), 255, 255);
     CRGB rgb;
     hsv2rgb_rainbow(hsv, rgb);
-    
-    // 根据音量决定显示长度
+
+    // 用音量控制亮度，但亮度不超过100
     float level = analyzer.level() * sensitivity_;
+    if (level < 0.0f) level = 0.0f;
     if (level > 1.0f) level = 1.0f;
-    int activeLength = (int)(level * numLeds);
+    uint8_t brightness = (uint8_t)(level * 100.0f);
+    if (brightness > 100) brightness = 100;
+    rgb.nscale8_video(brightness);
     
     // 应用颜色到LED
     for (int i = 0; i < numLeds; i++) {
@@ -233,8 +254,15 @@ private:
     if (level > 1.0f) level = 1.0f;
     int activeLength = (int)(level * numLeds);
     
+    // 限制亮度最大为100
+    if (level < 0.0f) level = 0.0f;
+    uint8_t brightness = (uint8_t)(level * 100.0f);
+    if (brightness > 100) brightness = 100;
+    CRGB color = CRGB::Blue;
+    color.nscale8_video(brightness);
+
     for (int i = 0; i < numLeds; i++) {
-      leds[i] = (i < activeLength) ? CRGB::Blue : CRGB::Black;
+      leds[i] = (i < activeLength) ? color : CRGB::Black;
     }
   }
   

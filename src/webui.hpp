@@ -313,14 +313,30 @@ poll();
   server.on("/api/pitch", HTTP_GET, [&]()
             {
     if (!server.hasArg("arm")) { sendJson(server,400,"{\"ok\":false,\"error\":\"arm required\"}"); return; }
-    int a = server.arg("arm").toInt(); pitchArmed = (a!=0);
+    int a = server.arg("arm").toInt();
+    pitchArmed = (a!=0);
+
+    // 当关闭音高检测时，清除由 Pitch 命中产生的点效果，避免 LED 长亮无法通过 Web UI 清掉
+    if (!pitchArmed) {
+      ctrl.clearPoint();
+    }
+
     sendJson(server,200, String("{\"ok\":true,\"armed\":") + (pitchArmed?"true":"false") + "}"); });
 
   // Audio control: /api/audio?enable=0/1 or /api/audio?set=1&sens=f&maxLen=n&low=r,g,b&mid=r,g,b&high=r,g,b
   server.on("/api/audio", HTTP_GET, [&]()
             {
     if (!server.hasArg("enable")) { sendJson(server,400,"{\"ok\":false,\"error\":\"enable required\"}"); return; }
-    ctrl.enableAudio(server.arg("enable").toInt()!=0);
+    bool en = (server.arg("enable").toInt()!=0);
+    ctrl.enableAudio(en);
+
+    // 当关闭音频效果时，同时关闭 Pitch 检测和 Pitch→Length，并清除点效果，避免残留LED长亮
+    if (!en) {
+      pitchArmed = false;
+      pitchMapEnable = false;
+      ctrl.clearPoint();
+    }
+
     sendJson(server, 200, "{\"ok\":true}"); });
 
   // Audio mode control: /api/audio/mode?mode=0|1|2|3

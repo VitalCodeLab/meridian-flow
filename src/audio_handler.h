@@ -21,6 +21,8 @@ extern float gPitchTolCents;
 extern unsigned long gPitchCooldownMs;
 extern unsigned long gPitchLastHit;
 extern uint16_t stepIndex;
+extern bool gPitchPointActive;
+extern unsigned long gPitchPointLastOn;
 
 // 函数声明
 /**

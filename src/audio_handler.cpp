@@ -2,6 +2,11 @@
 
 void updateAudioLog() {
   unsigned long now = millis();
+  // 仅在启用了音频效果时输出日志，避免默认情况下串口被刷屏
+  if (!controller.audioEnabled()) {
+    return;
+  }
+
   if (now - lastAudioLogAt >= 500) {
     lastAudioLogAt = now;
     Serial.printf("audio level=%.3f low=%.3f mid=%.3f high=%.3f en=%d mode=%s\n",
@@ -26,11 +31,18 @@ void handleAudioEffects() {
 }
 
 void handlePitchDetection() {
+  unsigned long now = millis();
+
+  // 如果之前有由 Pitch 命中产生的点，超过一段时间后自动熄灭，避免残留亮点
+  if (gPitchPointActive && (now - gPitchPointLastOn) > 600) {
+    controller.clearPoint();
+    gPitchPointActive = false;
+  }
+
   if (!gPitchArmed) return;
   
   float hz = analyzer.pitchHz();        // 获取当前音高（Hz）
   float conf = analyzer.pitchConf();    // 获取音高置信度（0-1）
-  unsigned long now = millis();
   
   // 检查是否满足音高检测条件
   if (hz > 0 && conf >= gPitchConfThresh && (now - gPitchLastHit) > gPitchCooldownMs) {
@@ -42,9 +54,10 @@ void handlePitchDetection() {
     if (cents <= gPitchTolCents) {
       gPitchLastHit = now;  // 更新上次呼应时间
       
-      // 视觉反馈：在当前索引位置设置绿色点
-      // 在当前索引位置设置绿色点
+      // 视觉反馈：在当前索引位置设置绿色点，并记录命中时间，短暂显示后自动熄灭
       controller.point().setPoint(stepIndex, (0u<<16)|(255u<<8)|0u);  // RGB格式：绿色
+      gPitchPointActive = true;
+      gPitchPointLastOn = now;
     }
   }
 }

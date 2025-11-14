@@ -176,6 +176,8 @@ void TCMMeridianSystem::initMeridians() {
     lung.name = "Lung Meridian";
     lung.chineseName = "手太阴肺经";
     lung.color = CRGB::Red;
+    lung.enabled = true;
+    lung.hasCustomRange = false;
     lung.startIndex = currentIndex;
     lung.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -189,6 +191,8 @@ void TCMMeridianSystem::initMeridians() {
     largeIntestine.name = "Large Intestine Meridian";
     largeIntestine.chineseName = "手阳明大肠经";
     largeIntestine.color = CRGB::Orange;
+    largeIntestine.enabled = false;
+    largeIntestine.hasCustomRange = false;
     largeIntestine.startIndex = currentIndex;
     largeIntestine.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -202,6 +206,8 @@ void TCMMeridianSystem::initMeridians() {
     stomach.name = "Stomach Meridian";
     stomach.chineseName = "足阳明胃经";
     stomach.color = CRGB::Yellow;
+    stomach.enabled = false;
+    stomach.hasCustomRange = false;
     stomach.startIndex = currentIndex;
     stomach.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -215,6 +221,8 @@ void TCMMeridianSystem::initMeridians() {
     spleen.name = "Spleen Meridian";
     spleen.chineseName = "足太阴脾经";
     spleen.color = CRGB(128, 255, 0);
+    spleen.enabled = false;
+    spleen.hasCustomRange = false;
     spleen.startIndex = currentIndex;
     spleen.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -228,6 +236,8 @@ void TCMMeridianSystem::initMeridians() {
     heart.name = "Heart Meridian";
     heart.chineseName = "手少阴心经";
     heart.color = CRGB::Green;
+    heart.enabled = false;
+    heart.hasCustomRange = false;
     heart.startIndex = currentIndex;
     heart.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -241,6 +251,8 @@ void TCMMeridianSystem::initMeridians() {
     smallIntestine.name = "Small Intestine Meridian";
     smallIntestine.chineseName = "手太阳小肠经";
     smallIntestine.color = CRGB(0, 255, 128);
+    smallIntestine.enabled = false;
+    smallIntestine.hasCustomRange = false;
     smallIntestine.startIndex = currentIndex;
     smallIntestine.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -254,6 +266,8 @@ void TCMMeridianSystem::initMeridians() {
     bladder.name = "Bladder Meridian";
     bladder.chineseName = "足太阳膀胱经";
     bladder.color = CRGB::Blue;
+    bladder.enabled = false;
+    bladder.hasCustomRange = false;
     bladder.startIndex = currentIndex;
     bladder.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -267,6 +281,8 @@ void TCMMeridianSystem::initMeridians() {
     kidney.name = "Kidney Meridian";
     kidney.chineseName = "足少阴肾经";
     kidney.color = CRGB(75, 0, 130);
+    kidney.enabled = false;
+    kidney.hasCustomRange = false;
     kidney.startIndex = currentIndex;
     kidney.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -280,6 +296,8 @@ void TCMMeridianSystem::initMeridians() {
     pericardium.name = "Pericardium Meridian";
     pericardium.chineseName = "手厥阴心包经";
     pericardium.color = CRGB::Purple;
+    pericardium.enabled = false;
+    pericardium.hasCustomRange = false;
     pericardium.startIndex = currentIndex;
     pericardium.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -293,6 +311,8 @@ void TCMMeridianSystem::initMeridians() {
     tripleEnergizer.name = "Triple Energizer Meridian";
     tripleEnergizer.chineseName = "手少阳三焦经";
     tripleEnergizer.color = CRGB::Magenta;
+    tripleEnergizer.enabled = false;
+    tripleEnergizer.hasCustomRange = false;
     tripleEnergizer.startIndex = currentIndex;
     tripleEnergizer.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -306,6 +326,8 @@ void TCMMeridianSystem::initMeridians() {
     gallbladder.name = "Gallbladder Meridian";
     gallbladder.chineseName = "足少阳胆经";
     gallbladder.color = CRGB::Pink;
+    gallbladder.enabled = false;
+    gallbladder.hasCustomRange = false;
     gallbladder.startIndex = currentIndex;
     gallbladder.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -319,6 +341,8 @@ void TCMMeridianSystem::initMeridians() {
     liver.name = "Liver Meridian";
     liver.chineseName = "足厥阴肝经";
     liver.color = CRGB(139, 0, 0);
+    liver.enabled = false;
+    liver.hasCustomRange = false;
     liver.startIndex = currentIndex;
     liver.length = ledsPerMeridian + (remainder > 0 ? 1 : 0);
     if (remainder > 0) remainder--;
@@ -426,4 +450,140 @@ void TCMMeridianSystem::initAcupoints() {
     // 下面这部分是原来在 hpp 中的示例“特定重要穴位”添加逻辑，
     // 如果后续不需要这么详细，可以逐步精简。
     // （为保持行为一致，这里先不删除原有 addSpecificAcupoint 调用。）
+}
+
+void TCMMeridianSystem::startSingleFlow(MeridianType type, uint8_t tailLength, uint16_t interval) {
+  flowMode_ = FLOW_SINGLE;
+  flowTailLength_ = tailLength;
+  flowIntervalMs_ = interval;
+  flowSingleMeridian_ = type;
+  flowMeridianIndex_ = 0;
+  flowHead_ = 0;
+  flowInPause_ = false;
+  lastFlowStepMs_ = millis();
+}
+
+void TCMMeridianSystem::startAllFlow(uint8_t tailLength, uint16_t interval) {
+  flowMode_ = FLOW_ALL;
+  flowTailLength_ = tailLength;
+  flowIntervalMs_ = interval;
+  flowMeridianIndex_ = 0;
+  flowHead_ = 0;
+  flowInPause_ = false;
+  lastFlowStepMs_ = millis();
+}
+
+void TCMMeridianSystem::startCurrentTimeFlow(uint8_t tailLength, uint16_t interval) {
+  MeridianType active = getCurrentActiveMeridian();
+  startSingleFlow(active, tailLength, interval);
+}
+
+void TCMMeridianSystem::stopFlow() {
+  flowMode_ = FLOW_NONE;
+  flowInPause_ = false;
+  flowHead_ = 0;
+  flowMeridianIndex_ = 0;
+}
+
+void TCMMeridianSystem::tickFlow() {
+  if (flowMode_ == FLOW_NONE) {
+    return;
+  }
+
+  if (meridians_.empty()) {
+    stopFlow();
+    return;
+  }
+
+  uint32_t now = millis();
+
+  if (flowInPause_) {
+    if (now >= flowPauseEndMs_) {
+      flowInPause_ = false;
+      lastFlowStepMs_ = now;
+    } else {
+      return;
+    }
+  }
+
+  if (now - lastFlowStepMs_ < flowIntervalMs_) {
+    return;
+  }
+  lastFlowStepMs_ = now;
+
+  MeridianInfo* meridian = nullptr;
+
+  if (flowMode_ == FLOW_SINGLE) {
+    for (auto& m : meridians_) {
+      if (m.type == flowSingleMeridian_) {
+        meridian = &m;
+        break;
+      }
+    }
+  } else if (flowMode_ == FLOW_ALL) {
+    while (flowMeridianIndex_ < meridians_.size()) {
+      auto& m = meridians_[flowMeridianIndex_];
+      if (m.length == 0) {
+        flowMeridianIndex_++;
+        continue;
+      }
+      meridian = &m;
+      break;
+    }
+  }
+
+  if (!meridian || meridian->length == 0) {
+    stopFlow();
+    return;
+  }
+
+  for (uint16_t i = 0; i < meridian->length; i++) {
+    uint16_t idx = meridian->startIndex + i;
+    if (idx < numLeds_) {
+      leds_[idx] = CRGB::Black;
+    }
+  }
+
+  for (uint8_t t = 0; t < flowTailLength_; t++) {
+    int16_t pos = (int16_t)flowHead_ - (int16_t)t;
+    if (pos >= 0 && pos < (int16_t)meridian->length) {
+      uint16_t idx = meridian->startIndex + (uint16_t)pos;
+      if (idx < numLeds_) {
+        uint8_t brightness = 255 - ((255 * t) / flowTailLength_);
+        leds_[idx] = meridian->color;
+        leds_[idx].nscale8(brightness);
+      }
+    }
+  }
+
+  for (uint16_t apIdx : meridian->acupoints) {
+    if (apIdx >= meridian->length) {
+      continue;
+    }
+    if (flowHead_ >= apIdx && (flowHead_ - apIdx) < flowTailLength_) {
+      uint16_t idx = meridian->startIndex + apIdx;
+      if (idx < numLeds_) {
+        leds_[idx] = CRGB::White;
+      }
+    }
+  }
+
+  FastLED.show();
+
+  flowHead_++;
+
+  if (flowHead_ >= meridian->length + flowTailLength_) {
+    if (flowMode_ == FLOW_SINGLE) {
+      stopFlow();
+    } else if (flowMode_ == FLOW_ALL) {
+      flowHead_ = 0;
+      flowMeridianIndex_++;
+      if (flowMeridianIndex_ >= meridians_.size()) {
+        stopFlow();
+      } else {
+        flowInPause_ = true;
+        flowPauseEndMs_ = now + flowPauseMs_;
+      }
+    }
+  }
 }
