@@ -104,6 +104,13 @@ uint8_t currentAudioMode = 0; // 当前音频模式
 const char *audioModeNames[] = {"LEVEL_BAR", "SPECTRUM", "BEAT_PULSE", "PITCH_COLOR"};
 const uint8_t AUDIO_MODE_COUNT = 4;
 
+// TCM 模式开关：启用时，不再运行音频效果和跑马灯渲染，避免与经络系统争用LED
+bool gTcmMode = false;
+
+// TCM 经络系统初始化与路由注册（在 tcm_demo.cpp 中实现）
+extern void initTcmSystem();
+extern void registerTcmRoutes(WebServer &server);
+
 // 硬件检查函数已移至hardware_check.cpp
 
 //---------- 初始化函数 ----------//
@@ -128,6 +135,9 @@ void setup()
   // 初始化LED控制器
   controller.begin();
 
+  // 初始化中医经络系统（仅做数据初始化，不再单独开启AP）
+  initTcmSystem();
+
   // 配置流动效果
   flow.setColor(0x00FF00); // 初始颜色为绿色
   flow.setTail(30);        // 增加拖尾长度使效果更平滑
@@ -147,6 +157,20 @@ void setup()
               controller, analyzer, stepIndex, gPitchArmed, gPitchTargetHz, gPitchConfThresh,
               gPitchTolCents, gPitchMapEnable, gPitchMapScale, gPitchMapMinHz, gPitchMapMaxHz,
               FLOW_INTERVAL_MS, FLOW_TAIL);
+
+  // 注册 TCM 模式控制 API：/api/tcm?enable=0/1
+  server.on("/api/tcm", HTTP_GET, []() {
+    if (!server.hasArg("enable")) {
+      server.send(400, "application/json", "{\"ok\":false,\"error\":\"enable required\"}");
+      return;
+    }
+    int en = server.arg("enable").toInt();
+    gTcmMode = (en != 0);
+    server.send(200, "application/json", String("{\"ok\":true,\"tcm\":") + (gTcmMode?"true":"false") + "}");
+  });
+
+  // 注册经络相关HTTP接口，使 /tcm 页面可以通过同一 WebServer 控制经络系统
+  registerTcmRoutes(server);
 
   Serial.println("Setup complete, entering main loop");
 }
@@ -176,19 +200,27 @@ void loop()
 {
   // 1. 输入处理
   button.poll();   // 检测按钮状态变化
-  analyzer.tick(); // 采集和分析音频数据
 
-  // 2. 功能模块处理 - 调用各模块中的函数
-  updateAudioLog();       // 音频状态日志
-  handleAudioEffects();   // 音频效果处理
-  handlePitchDetection(); // 音高检测
-  handleButtonActions();  // 按钮交互
+  // 如果未启用 TCM 模式，才采集音频并运行音频相关逻辑
+  if (!gTcmMode)
+  {
+    analyzer.tick();      // 采集和分析音频数据
+    updateAudioLog();     // 音频状态日志
+    handleAudioEffects(); // 音频效果处理
+    handlePitchDetection(); // 音高检测
+  }
+
+  // 按钮交互始终可用（用于切换 FLOW/STEP 等）
+  handleButtonActions();
 
   // 3. Web服务器处理
   server.handleClient(); // 响应Web请求
 
-  // 4. 渲染处理
-  controller.tick(); // 更新灯带状态
+  // 4. 渲染处理：只有在非 TCM 模式下才使用增强控制器驱动灯带
+  if (!gTcmMode)
+  {
+    controller.tick(); // 更新灯带状态
+  }
 
   // 小延时以减轻 CPU 负载并稳定帧率
   delay(2);

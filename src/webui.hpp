@@ -5,9 +5,11 @@
 #include "meridian.hpp"
 #include "enhanced_led_controller.hpp"
 #include "optimized_audio.hpp"
+#include "tcm_page.h"
 
 // 使用于音频模式同步的全局变量声明
 extern uint8_t currentAudioMode;
+extern bool gTcmMode; // TCM 模式全局开关，由 main.cpp 定义
 
 static inline void sendJson(WebServer &server, int code, const String &body) { server.send(code, "application/json", body); }
 
@@ -249,6 +251,14 @@ async function updateBrightness() {
   await fetch(`/api/brightness?value=${value}`);
 }
 
+async function setTcm(enable){
+  try{
+    await fetch(`/api/tcm?enable=${enable}`);
+  }catch(e){
+    console.error('Error toggling TCM mode:', e);
+  }
+}
+
 async function poll(){
   try{
     const r=await fetch('/api/state');
@@ -260,6 +270,13 @@ async function poll(){
     document.getElementById('brightnessValue').textContent = j.brightness;
     document.getElementById('pm').checked = j.pitchmap && j.pitchmap.enable;
     
+    // Update TCM mode status
+    if (typeof j.tcm === 'boolean') {
+      const el = document.getElementById('tcmStatus');
+      if (el) {
+        el.textContent = j.tcm ? 'ON' : 'OFF';
+      }
+    }
     
     // Update audio mode
     if (j.audio && typeof j.audio.mode === 'number') {
@@ -278,6 +295,12 @@ poll();
 </body></html>
 )HTML";
     server.send(200, "text/html", html); });
+
+  // TCM meridian control page
+  server.on("/tcm", HTTP_GET, [&server]()
+            {
+    server.send(200, "text/html", TCM_PAGE_HTML);
+  });
 
   // Pitch map: /api/pitchmap?enable=1&scale=1.0&min=110&max=880
   server.on("/api/pitchmap", HTTP_GET, [&]()
@@ -335,6 +358,7 @@ poll();
       s += "\"enabled\":"; s += ctrl.audioEnabled()?"true":"false"; s += ",";
       s += "\"mode\":"; s += String((int)ctrl.getAudioMode());
     s += "},";
+    s += "\"tcm\":"; s += gTcmMode?"true":"false"; s += ",";
     s += "\"pitchmap\":{";
       s += "\"enable\":"; s += pitchMapEnable?"true":"false"; s += ",";
       s += "\"scale\":"; s += String(pitchMapScale,2); s += ",";
