@@ -6,6 +6,9 @@
 #include "enhanced_led_controller.hpp"
 #include "optimized_audio.hpp"
 
+// 使用于音频模式同步的全局变量声明
+extern uint8_t currentAudioMode;
+
 static inline void sendJson(WebServer &server, int code, const String &body) { server.send(code, "application/json", body); }
 
 static inline bool parseColorArg(const String &s, uint32_t &out)
@@ -304,6 +307,10 @@ poll();
     int mode = server.arg("mode").toInt();
     if (mode < 0) mode = 0;
     if (mode > 3) mode = 3;
+
+    // 同步更新全局音频模式，以避免在主循环中被恢复为默认值
+    currentAudioMode = static_cast<uint8_t>(mode);
+
     ctrl.setAudioMode(static_cast<AudioVisualizer::EffectType>(mode));
     sendJson(server, 200, String("{\"ok\":true,\"mode\":") + String(mode) + "}"); });
   server.on("/index.html", HTTP_GET, [&server]()
