@@ -7,9 +7,9 @@
 #include "enhanced_led_controller.hpp"
 
 // 定义硬件参数
-// 目前使用一条 60 颗 WS2812B 灯带，连接在 GPIO0 上
+// 目前使用一条 100 颗 WS2812B 灯带，连接在 GPIO0 上
 #define LED_PIN 0        // WS2812B 数据线连接到 GPIO0
-#define LED_COUNT 60     // 实际灯珠数量
+#define LED_COUNT 100     // 实际灯珠数量
 #define BRIGHTNESS 64    // 亮度设置 (0-255)
 
 // 创建中医经络系统实例

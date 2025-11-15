@@ -56,7 +56,7 @@
 - **WS2812B 灯带**
 
   - 数据线: GPIO0 （在 `src/main.cpp` 中常量 `LED_PIN`）
-  - 灯珠数量: `LED_COUNT`（默认 60）
+  - 灯珠数量: `LED_COUNT`（默认 100）
   - 电源: 5V (建议使用外部电源，确保电源充足)
   - 地线: GND (确保与 ESP32 共地)
 
@@ -77,7 +77,7 @@
 - **LED 设置**
 
   - `LED_PIN`: 灯带数据引脚（默认 GPIO0）
-  - `LED_COUNT`: 灯珠数量（默认 60）
+  - `LED_COUNT`: 灯珠数量（默认 100）
   - `gBrightness`: 全局亮度（0-255，默认 60）
   - `gPowerLimit_mA`: 电源限制（毫安）
   - `gLedFull_mA`: 单颗 LED 满亮度电流（毫安）
