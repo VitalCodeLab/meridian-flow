@@ -35,7 +35,7 @@
 
 // 实际硬件连接配置
 const uint8_t LED_PIN = 0; // WS2812B LED 连接到 GPIO0
-const uint16_t LED_COUNT = 100;
+const uint16_t LED_COUNT = 160;
 const uint8_t BUTTON_PIN = 9;
 const bool BUTTON_ACTIVE_LOW = true;
 const uint8_t AUDIO_PIN = 3; // MAX9814 OUT to ADC pin (moved from 4)

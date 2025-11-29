@@ -18,7 +18,7 @@ extern void stopTcmFlow();
 
 // 供 hardware_check 使用的硬件常量
 const uint8_t LED_PIN = 0;       // WS2812B 连接到 GPIO0
-const uint16_t LED_COUNT = 100;   // 灯珠数量
+const uint16_t LED_COUNT = 160;   // 灯珠数量
 const uint8_t BUTTON_PIN = 9;    // 仍然暴露按钮引脚，方便后续扩展
 const bool BUTTON_ACTIVE_LOW = true;
 const uint8_t AUDIO_PIN = 3;     // 不主动使用音频，但保持一致的引脚定义
